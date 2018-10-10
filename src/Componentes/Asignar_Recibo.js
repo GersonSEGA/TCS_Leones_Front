@@ -3,24 +3,77 @@ import '../App.css';
 import {browserHistory} from 'react-router-3';
 import CONFIG from '../Configuracion/Config';
 import swal from 'sweetalert'
-import AR_buscarAlumno from './AR_buscarAlumno';
+import AR_tablaRecivo from './AR_tablaRecivo';
+import AR_tablaAsignacion from './AR_tablaAsignacion';
 
 class Asignar_Recibo extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
-            buscar:true,
-            rec: '', //Variable para la solicitud del recibo
-            objeto:[]
+            idAlum: '',
+            codAlum: '',
+            idPrograma: '',
+            objAsignacion: [],
+            //---------------------------------------------
+            flag: false,
+            buscar: false,
+            //----------------------------------------------
+            rec: '', 
+            objRecaudaciones: [],
+            //----------------------------------------------
+            dni: '',
+            codigo: '',
+            apePat: '',
+            apeMat: '',
+            nombre: '',
+            objAlumnos: [],
         };
 
-        this.onSubmit2 = this.onSubmit2.bind(this);
-        this.onChange = this.onChange.bind(this);
+        this.onSubmitRecibo = this.onSubmitRecibo.bind(this);
+        this.onSubmitAlumno = this.onSubmitAlumno.bind(this);
+        this.buscarDni = this.buscarDni.bind(this);
+        this.buscarCodigo = this.buscarCodigo.bind(this);
+        this.buscarApePaterno = this.buscarApePaterno.bind(this);
+        this.buscarApeMaterno = this.buscarApeMaterno.bind(this);
+        this.buscarNombre = this.buscarNombre.bind(this);
+        this.onChangeRecibo = this.onChangeRecibo.bind(this);
+        this.onChangeDni = this.onChangeDni.bind(this);
+        this.onChangeCodigo = this.onChangeCodigo.bind(this);
+        this.onChangeApePaterno = this.onChangeApePaterno.bind(this);
+        this.onChangeApeMaterno = this.onChangeApeMaterno.bind(this);
+        this.onChangeNombre = this.onChangeNombre.bind(this);
         this.Regresar = this.Regresar.bind(this);
     }
 
-    onSubmit2=(e)=>{
+    buscarAsignacion = (idAlum, e) => {
+        fetch(CONFIG + 'alumnoalumnoprograma/buscar/' + idAlum)
+            .then ((response) => {
+                return response.json();
+            })
+            .then((asignacion) => {
+                console.log(asignacion, "Asignacion");
+                if(asignacion.length != 0){
+                    this.setState((prevState, props) => {
+                        return {objAsignacion: this.state.objAsignacion.concat(asignacion)}
+                    });
+                    if(this.state.objAsignacion.length != 0){
+                        console.log("TMR")
+                        console.log(this.state.objAsignacion);
+                        this.buscarCodigo(this.state.objAsignacion[0].codAlumno);
+                    } else{
+                        console.log("No Entró");
+                    }
+                }
+                swal("El recibo ya está asignado a un alumno!" ,"", "success")
+            })
+            .catch((error) => {
+                swal("Oops, Algo salió mal!", "","error")
+                console.error(error)
+            });
+    }
+
+    onSubmitRecibo = (e) => {
         var recValidado= this.ValidarRecibo(this.state.rec);
         console.log(this.state.rec,"recibo")
         fetch(CONFIG + 'recaudaciones/rec/' + this.state.rec)
@@ -30,25 +83,34 @@ class Asignar_Recibo extends React.Component {
               })
             .then((recaudaciones)=>{
                 console.log(recaudaciones,"recaudaciones");
-                console.log(this.state.buscar,"estadoSucces")
+                console.log(this.state.buscar,"estadoSuccess")
                 if(recaudaciones.length>0){
-                    this.state.buscar=false;
+                    this.state.buscar = true;
                     this.setState((prevState, props) =>{
-                        return {objeto:this.state.objeto.concat(recaudaciones)}
+                        return {objRecaudaciones: this.state.objRecaudaciones.concat(recaudaciones)}
                     });
                     swal("Consulta realizada exitosamente!" ,"", "success")
+                    if(this.state.objRecaudaciones.length > 0){
+                        this.buscarAsignacion(this.state.objRecaudaciones[0].idAlum, e);
+                    } 
                 }else{
                     this.state.buscar=true;
                     swal("No se encontró informacion", "", "info");
                 }
             })
             .catch(error => {
-                this.state.buscar=true;
+                this.state.buscar = false;
                 console.log(this.state.buscar,"estadoError")
                 swal("Oops, Algo salió mal!", "","error")
                 console.error(error)
             });
             e.preventDefault();
+    }
+
+    onChangeRecibo = (e) => {
+        this.setState({
+            rec: e.target.value
+        });
     }
 
     ValidarRecibo (recibo) {
@@ -60,11 +122,191 @@ class Asignar_Recibo extends React.Component {
         }
     }
 
-    onChange = (e) => {
+    //----------------------------------------------------------------------------------------
+
+    buscarDni = (dni, e) => {
+        fetch(CONFIG + 'alumnoprograma/buscard/' + dni)
+            .then((response) => {
+                return response.json();
+            })
+            .then((alumnos) => {
+                console.log(alumnos, "alumnos");
+                if(alumnos.length > 0){
+                    this.setState((prevState, props) => {
+                        return {objAlumnos: this.state.objAlumnos.concat(alumnos)}
+                    });
+                    swal("Consulta realizada exitosamente!", "", "success");
+                } else{
+                    swal("No se encontró informacion", "", "info");
+                }
+            })
+            .catch((error) => {
+                swal("Algo salío mal", "", "error");
+                console.log(error);
+            });
+    }
+
+    buscarCodigo = (codigo, e) => {
+        console.log(this.state.codigo, "Codigo");
+        fetch(CONFIG + 'alumnoprograma/buscarc/' + codigo)
+            .then((response) => {
+                return response.json();
+            })
+            .then((alumnos) => {
+                console.log(alumnos, "alumnos");
+                if(alumnos.length != 0){
+                    this.setState((prevState, props) => {
+                        return {objAlumnos: this.state.objAlumnos.concat(alumnos)}
+                    });
+                    console.log(this.state.objAlumnos);
+                    swal("Consulta realizada exitosamente!", "", "success");
+                } else{
+                    console.log(this.state.objAlumnos);
+                    swal("No se encontró informacion", "", "info");
+                }
+            })
+            .catch((error) => {
+                swal("Algo salío mal", "", "error");
+                console.log(error);
+            });
+    }
+
+    buscarApePaterno = (apePaterno, e) => {
+        console.log(this.state.apePat, "Apellido Paterno");
+        fetch(CONFIG + 'alumnoprograma/leer/' + apePaterno)
+            .then((response) => {
+                return response.json();
+            })
+            .then((alumnos) => {
+                console.log(alumnos, "alumnos");
+                if(alumnos.length > 0){
+                    console.log("entró");
+                    this.setState((prevState, props) => {
+                        return {objAlumnos: this.state.objAlumnos.concat(alumnos)}
+                    });
+                    console.log(this.state.objAlumnos);
+                    swal("Consulta realizada exitosamente!", "", "success");
+                } else{
+                    console.log(this.state.objAlumnos);
+                    swal("No se encontró informacion", "", "info");
+                }
+            })
+            .catch((error) => {
+                swal("Algo salío mal", "", "error");
+                console.log(error);
+            });
+    }
+
+    buscarApeMaterno = (apeMaterno, e) => {
+        console.log(this.state.apeMat, "Apellido Materno");
+        fetch(CONFIG + 'alumnoprograma/leer/' + apeMaterno)
+            .then((response) => {
+                return response.json();
+            })
+            .then((alumnos) => {
+                console.log(alumnos, "alumnos");
+                if(alumnos.length > 0){
+                    console.log("entró");
+                    this.setState((prevState, props) => {
+                        return {objAlumnos: this.state.objAlumnos.concat(alumnos)}
+                    });
+                    console.log(this.state.objAlumnos);
+                    swal("Consulta realizada exitosamente!", "", "success");
+                } else{
+                    console.log(this.state.objAlumnos);
+                    swal("No se encontró informacion", "", "info");
+                }
+            })
+            .catch((error) => {
+                swal("Algo salío mal", "", "error");
+                console.log(error);
+            });
+    }
+
+    buscarNombre = (nombre, e) => {
+        console.log(this.state.apeMat, "Nombre");
+        fetch(CONFIG + 'alumnoprograma/leer/' + nombre)
+            .then((response) => {
+                return response.json();
+            })
+            .then((alumnos) => {
+                console.log(alumnos, "alumnos");
+                if(alumnos.length > 0){
+                    console.log("entró");
+                    this.setState((prevState, props) => {
+                        return {objAlumnos: this.state.objAlumnos.concat(alumnos)}
+                    });
+                    console.log(this.state.objAlumnos);
+                    swal("Consulta realizada exitosamente!", "", "success");
+                } else{
+                    console.log(this.state.objAlumnos);
+                    swal("No se encontró informacion", "", "info");
+                }
+            })
+            .catch((error) => {
+                swal("Algo salío mal", "", "error");
+                console.log(error);
+            });
+    }
+
+    onSubmitAlumno = (e) => {
+        var dniValidado = this.Validar(this.state.dni, this.state.codigo, this.state.apePat, this.state.apeMat, this.state.nombre);
+        if(this.state.dni != '' && this.state.codigo == '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == ''){
+            this.buscarDni(this.state.dni, e);
+        } else if(this.state.dni == '' && this.state.codigo != '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == ''){
+           this.buscarCodigo(this.state.codigo, e);
+        } else if(this.state.dni == '' && this.state.codigo == '' && this.state.apePat != '' && this.state.apeMat == '' && this.state.nombre == ''){
+            this.buscarApePaterno(this.state.apePat, e);
+        } else if(this.state.dni == '' && this.state.codigo == '' && this.state.apePat == '' && this.state.apeMat != '' && this.state.nombre == ''){
+            this.buscarApeMaterno(this.state.apeMat, e);
+        } else if(this.state.dni == '' && this.state.codigo == '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre != ''){
+            this.buscarNombre(this.state.nombre, e);
+        } else{
+            swal("Lo sentimos, sólo puede llenar un campo para la búsqueda", "", "info");
+        }
+         e.preventDefault();
+    }
+
+    onChangeDni = (e) => {
         this.setState({
-            rec: e.target.value
+            dni: e.target.value
         });
     }
+
+    onChangeCodigo = (e) => {
+        this.setState({
+            codigo: e.target.value
+        });
+    }
+
+    onChangeApePaterno = (e) => {
+        this.setState({
+            apePat: e.target.value
+        });
+    }
+
+    onChangeApeMaterno = (e) => {
+        this.setState({
+            apeMat: e.target.value
+        });
+    }
+
+    onChangeNombre = (e) => {
+        this.setState({
+            nombre: e.target.value
+        });
+    }
+
+    Validar(dni, codigo, apePat, apeMat, nombre){
+        if(dni == '' && codigo == '' && apePat == '' && apeMat == '' && nombre == ''){
+            swal("Ingrese uno de los campos para realizar la búsqueda", "", "info");
+            return false;
+        } else{
+            return true;
+        }
+    } 
+
+    //----------------------------------------------------------------------------------------
 
     Regresar=(e)=>{
         browserHistory.push('/vista/loginNyA');
@@ -84,16 +326,17 @@ class Asignar_Recibo extends React.Component {
                         </li>
                     </ul>
                 </h3>
-                <hr/>
+                <div className="container">
                 <div className="SplitPane row">
                     <div className="col-xs-6">
                         <form>
                             <div className="row justify-content-md-center">
                                 <div className="col-xs-5 centrar">
-                                <input className="autocomplete" value={this.state.rec} onChange={this.onChange} placeholder="Numero de recibo" ></input>
-                                <button className="waves-effect waves-light btn-large btn-center" type="submit" onClick={this.onSubmit2}>
-                                    Buscar <i className="large material-icons left">search</i>
-                                </button>
+                                    <br/><h4>Buscar recibo</h4><br/><br/>
+                                    <input className="autocomplete" value={this.state.rec} onChange={this.onChangeRecibo} placeholder="Numero de recibo" ></input>
+                                    <button className="waves-effect waves-light btn-large btn-center" type="submit" onClick={this.onSubmitRecibo}>
+                                        Buscar <i className="large material-icons left">search</i>
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -102,15 +345,43 @@ class Asignar_Recibo extends React.Component {
                         <form>
                             <div className="row justify-content-md-center">
                                 <div className="col-xs-8 centrar">
-                                <input className="autocomplete" value={this.state.dni} onChange={this.onChangeDni} placeholder="DNI"></input>
-                                <input className="autoomplete" value={this.state.codigo} onChange={this.onChangeCodigo} placeholder="Código"></input>
-                                <input className="autocomplete" value={this.state.apePat} onChange={this.onChangeApePaterno} placeholder="Apellido paterno"></input>
-                                <input className="autocomplete" value={this.state.apeMat} onChange={this.onChangeApeMaterno} placeholder="Apellido Materno"></input>                                                
-                                <input className="autocomplete" value={this.state.nombre} onChange={this.onChangeNombre} placeholder="Nombres"></input>
+                                    <br/><h4>Buscar alumno</h4><br/>
+                                    <input className="autocomplete" value={this.state.dni} onChange={this.onChangeDni} placeholder="DNI"></input>
+                                    <input className="autoomplete" value={this.state.codigo} onChange={this.onChangeCodigo} placeholder="Código"></input>
+                                    <input className="autocomplete" value={this.state.apePat} onChange={this.onChangeApePaterno} placeholder="Apellido paterno"></input>
+                                    <input className="autocomplete" value={this.state.apeMat} onChange={this.onChangeApeMaterno} placeholder="Apellido Materno"></input>                                                
+                                    <input className="autocomplete" value={this.state.nombre} onChange={this.onChangeNombre} placeholder="Nombres"></input>
+                                    <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitAlumno}>
+                                        Buscar <i className="large material-icons left">search</i>
+                                    </button>
                                 </div>
                             </div>
                         </form>
                     </div>
+                </div>
+                <hr/>
+                <div className="SplitPane row">
+                    {this.state.buscar?(
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th className="th">Recibo</th>
+                                    <th className="th">Código</th>
+                                    <th className="th">Programa</th>
+                                    <th className="th">Nombres</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td className="td">{this.state.objRecaudaciones[0].numero}</td>
+                                    <td className="td">{this.state.objAlumnos[0].codAlumno}</td>
+                                    <td className="td">{this.state.objAlumnos[0].nom_programa}</td>
+                                    <td className="td">{this.state.objAlumnos[0].apePaterno + " " + this.state.objAlumnos[0].apeMaterno + " " + this.state.objAlumnos[0].nomAlumno}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    ): (null)}
+                </div>
                 </div>
                 <hr/>
                 <footer>

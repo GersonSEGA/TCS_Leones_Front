@@ -175,11 +175,9 @@ label {
   background:#eceaea;
   border-radius: 15px;
   padding: 30px;
-  width: 500px;
-  
-  
-   
+  width: auto;
  }
+
  .sombra{
    background: #e8e5e5;
    margin-top: 5px;
