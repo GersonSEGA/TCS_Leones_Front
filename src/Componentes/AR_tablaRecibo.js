@@ -1,6 +1,6 @@
 import React from 'react'
 
-class AR_tablaRecivo extends React.Component {
+class AR_tablaRecibo extends React.Component {
 
     constructor (props) {
         super(props);
@@ -21,12 +21,12 @@ class AR_tablaRecivo extends React.Component {
                 </thead>
                 <tbody>
                     <tr>
-                        <td className="td">{this.props.listaRecaudaciones[0].idRec}</td>
-                        <td className="td">{this.props.listaRecaudaciones[0].numero}</td>
-                        <td className="td">{this.props.listaRecaudaciones[0].concepto}</td>
-                        <td className="td">{this.props.listaRecaudaciones[0].apeNom}</td>
-                        <td className="td">{this.props.listaRecaudaciones[0].importe}</td>
-                        <td className="td">{this.props.listaRecaudaciones[0].fecha}</td>
+                        <td className="td">{this.props.objeto[0].idRec}</td>
+                        <td className="td">{this.props.objeto[0].numero}</td>
+                        <td className="td">{this.props.objeto[0].concepto}</td>
+                        <td className="td">{this.props.objeto[0].apeNom}</td>
+                        <td className="td">{this.props.objeto[0].importe}</td>
+                        <td className="td">{this.props.objeto[0].fecha}</td>
                     </tr>
                 </tbody>
             </table>
@@ -35,4 +35,4 @@ class AR_tablaRecivo extends React.Component {
 
 }
 
-export default AR_tablaRecivo
+export default AR_tablaRecibo

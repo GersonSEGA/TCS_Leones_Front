@@ -3,7 +3,19 @@ import React from 'react'
 class AR_tablaAsignacion extends React.Component {
     constructor (props){
         super(props);
+        
+        this.state = {
+            flag: false,
+        }
+
+        this.detalles = this.detalles.bind(this);
     }
+
+    detalles = (e) => {
+        this.setState({
+            flag: true,
+        });
+    } 
 
     render(){
         return(

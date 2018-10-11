@@ -3,7 +3,6 @@ import '../App.css';
 import {browserHistory} from 'react-router-3';
 import CONFIG from '../Configuracion/Config';
 import swal from 'sweetalert'
-import AR_tablaRecivo from './AR_tablaRecivo';
 import AR_tablaAsignacion from './AR_tablaAsignacion';
 
 class Asignar_Recibo extends React.Component {
@@ -80,16 +79,14 @@ class Asignar_Recibo extends React.Component {
     }
 
     asignar = (e) => {
-        for(let i = 0; i < this.state.objAlumnos.length; i++){
-            this.setState({
-                alumRecibo: {
-                    numero: this.state.objRecaudaciones[i].numero,
-                    codAlumno: this.state.objAlumnos[i].codAlumno,
-                    nom_programa: this.state.objAlumnos[i].nom_programa,
-                    nomAlumno: this.state.objAlumnos[i].apePaterno + " " + this.state.objAlumnos[i].apeMaterno + " " + this.state.objAlumnos[i].nomAlumno,
-                }
-            });
-        }
+        this.setState({
+            alumRecibo: {
+                numero: this.state.objRecaudaciones[0].numero,
+                codAlumno: this.state.objAlumnos[0].codAlumno,
+                nom_programa: this.state.objAlumnos[0].nom_programa,
+                nomAlumno: this.state.objAlumnos[0].apePaterno + " " + this.state.objAlumnos[0].apeMaterno + " " + this.state.objAlumnos[0].nomAlumno,
+            }
+        });
         e.preventDefault();
     }
 
