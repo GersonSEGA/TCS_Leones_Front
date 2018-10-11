@@ -53,43 +53,6 @@ class Asignar_Recibo extends React.Component {
         this.Regresar = this.Regresar.bind(this);
     }
 
-    buscarAsignacion = (idAlum) => {
-        fetch(CONFIG + 'alumnoalumnoprograma/buscar/' + idAlum)
-            .then ((response) => {
-                return response.json();
-            })
-            .then((asignacion) => {
-                console.log(asignacion, "Asignacion");
-                if(asignacion.length > 0){
-                    this.setState((prevState, props) => {
-                        return {objAsignacion: this.state.objAsignacion.concat(asignacion)}
-                    });
-                    if(this.state.objAsignacion.length > 0){
-                        this.buscarCodigo(this.state.objAsignacion[0].codAlumno);
-                    } else{
-                        console.log("No Entró");
-                    }
-                }
-                swal("El recibo ya está asignado a un alumno!" ,"", "success")
-            })
-            .catch((error) => {
-                swal("Oops, Algo salió mal!", "","error")
-                console.error(error)
-            });
-    }
-
-    asignar = (e) => {
-        this.setState({
-            alumRecibo: {
-                numero: this.state.objRecaudaciones[0].numero,
-                codAlumno: this.state.objAlumnos[0].codAlumno,
-                nom_programa: this.state.objAlumnos[0].nom_programa,
-                nomAlumno: this.state.objAlumnos[0].apePaterno + " " + this.state.objAlumnos[0].apeMaterno + " " + this.state.objAlumnos[0].nomAlumno,
-            }
-        });
-        e.preventDefault();
-    }
-
     onSubmitRecibo = (e) => {
         this.ValidarRecibo(this.state.rec);
         console.log(this.state.rec,"recibo")
@@ -107,9 +70,16 @@ class Asignar_Recibo extends React.Component {
                     });
                     swal("Consulta realizada exitosamente!" ,"", "success")
                     if(this.state.objRecaudaciones.length > 0){
-                        this.buscarAsignacion(this.state.objRecaudaciones[0].idAlum);
-                        this.asignar();
-                    } 
+                        this.buscarAsignacion(this.state.objRecaudaciones[0].idAlum)
+                        console.log("---------");
+                        console.log(this.state.objAsignacion)
+                        if(this.state.objAsignacion.length != 0){
+                            this.buscarCodigo(this.state.objAsignacion[0].codAlumno);
+                            this.asignar();
+                        }else {
+                            console.log("No entró");
+                        }
+                    }
                 }else{
                     this.state.buscar=true;
                     swal("No se encontró informacion", "", "info");
@@ -122,6 +92,38 @@ class Asignar_Recibo extends React.Component {
                 console.error(error)
             });
             e.preventDefault();
+    }
+
+    buscarAsignacion = (idAlum) => {
+        fetch(CONFIG + 'alumnoalumnoprograma/buscar/' + idAlum)
+            .then ((response) => {
+                return response.json();
+            })
+            .then((asignacion) => {
+                console.log(asignacion, "Asignacion");
+                if(asignacion.length != 0){
+                    this.setState((prevState, props) => {
+                        return {objAsignacion: this.state.objAsignacion.concat(asignacion)}
+                    });
+                }
+                console.log(this.state.objAsignacion, "Objeto Asignacion");
+            })
+            .catch((error) => {
+                swal("Oops, Algo salió mal!", "","error")
+                console.error(error)
+            });
+    }
+
+    asignar = (e) => {
+        this.setState({
+            alumRecibo: {
+                numero: this.state.objRecaudaciones[0].numero,
+                codAlumno: this.state.objAlumnos[0].codAlumno,
+                nom_programa: this.state.objAlumnos[0].nom_programa,
+                nomAlumno: this.state.objAlumnos[0].apePaterno + " " + this.state.objAlumnos[0].apeMaterno + " " + this.state.objAlumnos[0].nomAlumno,
+            }
+        });
+        e.preventDefault();
     }
 
     onChangeRecibo = (e) => {
@@ -171,7 +173,7 @@ class Asignar_Recibo extends React.Component {
             })
             .then((alumnos) => {
                 console.log(alumnos, "alumnos");
-                if(alumnos.length > 0){
+                if(alumnos.length != 0){
                     this.setState((prevState, props) => {
                         return {objAlumnos: this.state.objAlumnos.concat(alumnos)}
                     });
