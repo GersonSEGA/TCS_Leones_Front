@@ -28,6 +28,13 @@ class Asignar_Recibo extends React.Component {
             apeMat: '',
             nombre: '',
             objAlumnos: [],
+            //----------------------------------------------
+            alumRecibo: {
+                numero: '',
+                codAlumno: '',
+                nom_programa: '',
+                nomAlumno: '',
+            }
         };
 
         this.onSubmitRecibo = this.onSubmitRecibo.bind(this);
@@ -37,6 +44,7 @@ class Asignar_Recibo extends React.Component {
         this.buscarApePaterno = this.buscarApePaterno.bind(this);
         this.buscarApeMaterno = this.buscarApeMaterno.bind(this);
         this.buscarNombre = this.buscarNombre.bind(this);
+        this.asignar = this.asignar.bind(this);
         this.onChangeRecibo = this.onChangeRecibo.bind(this);
         this.onChangeDni = this.onChangeDni.bind(this);
         this.onChangeCodigo = this.onChangeCodigo.bind(this);
@@ -46,20 +54,18 @@ class Asignar_Recibo extends React.Component {
         this.Regresar = this.Regresar.bind(this);
     }
 
-    buscarAsignacion = (idAlum, e) => {
+    buscarAsignacion = (idAlum) => {
         fetch(CONFIG + 'alumnoalumnoprograma/buscar/' + idAlum)
             .then ((response) => {
                 return response.json();
             })
             .then((asignacion) => {
                 console.log(asignacion, "Asignacion");
-                if(asignacion.length != 0){
+                if(asignacion.length > 0){
                     this.setState((prevState, props) => {
                         return {objAsignacion: this.state.objAsignacion.concat(asignacion)}
                     });
-                    if(this.state.objAsignacion.length != 0){
-                        console.log("TMR")
-                        console.log(this.state.objAsignacion);
+                    if(this.state.objAsignacion.length > 0){
                         this.buscarCodigo(this.state.objAsignacion[0].codAlumno);
                     } else{
                         console.log("No Entró");
@@ -73,25 +79,39 @@ class Asignar_Recibo extends React.Component {
             });
     }
 
+    asignar = (e) => {
+        for(let i = 0; i < this.state.objAlumnos.length; i++){
+            this.setState({
+                alumRecibo: {
+                    numero: this.state.objRecaudaciones[i].numero,
+                    codAlumno: this.state.objAlumnos[i].codAlumno,
+                    nom_programa: this.state.objAlumnos[i].nom_programa,
+                    nomAlumno: this.state.objAlumnos[i].apePaterno + " " + this.state.objAlumnos[i].apeMaterno + " " + this.state.objAlumnos[i].nomAlumno,
+                }
+            });
+        }
+        e.preventDefault();
+    }
+
     onSubmitRecibo = (e) => {
-        var recValidado= this.ValidarRecibo(this.state.rec);
+        this.ValidarRecibo(this.state.rec);
         console.log(this.state.rec,"recibo")
         fetch(CONFIG + 'recaudaciones/rec/' + this.state.rec)
-            .then(
-              (response)=>{
+            .then((response )=> {
                 return response.json();
               })
-            .then((recaudaciones)=>{
+            .then((recaudaciones) => {
                 console.log(recaudaciones,"recaudaciones");
                 console.log(this.state.buscar,"estadoSuccess")
-                if(recaudaciones.length>0){
+                if(recaudaciones.length > 0) {
                     this.state.buscar = true;
                     this.setState((prevState, props) =>{
                         return {objRecaudaciones: this.state.objRecaudaciones.concat(recaudaciones)}
                     });
                     swal("Consulta realizada exitosamente!" ,"", "success")
                     if(this.state.objRecaudaciones.length > 0){
-                        this.buscarAsignacion(this.state.objRecaudaciones[0].idAlum, e);
+                        this.buscarAsignacion(this.state.objRecaudaciones[0].idAlum);
+                        this.asignar();
                     } 
                 }else{
                     this.state.buscar=true;
@@ -146,15 +166,15 @@ class Asignar_Recibo extends React.Component {
             });
     }
 
-    buscarCodigo = (codigo, e) => {
-        console.log(this.state.codigo, "Codigo");
+    buscarCodigo = (codigo) => {
+        console.log(codigo, "Codigo");
         fetch(CONFIG + 'alumnoprograma/buscarc/' + codigo)
             .then((response) => {
                 return response.json();
             })
             .then((alumnos) => {
                 console.log(alumnos, "alumnos");
-                if(alumnos.length != 0){
+                if(alumnos.length > 0){
                     this.setState((prevState, props) => {
                         return {objAlumnos: this.state.objAlumnos.concat(alumnos)}
                     });
@@ -264,7 +284,7 @@ class Asignar_Recibo extends React.Component {
         } else{
             swal("Lo sentimos, sólo puede llenar un campo para la búsqueda", "", "info");
         }
-         e.preventDefault();
+        e.preventDefault(); 
     }
 
     onChangeDni = (e) => {
@@ -362,24 +382,7 @@ class Asignar_Recibo extends React.Component {
                 <hr/>
                 <div className="SplitPane row">
                     {this.state.buscar?(
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th className="th">Recibo</th>
-                                    <th className="th">Código</th>
-                                    <th className="th">Programa</th>
-                                    <th className="th">Nombres</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td className="td">{this.state.objRecaudaciones[0].numero}</td>
-                                    <td className="td">{this.state.objAlumnos[0].codAlumno}</td>
-                                    <td className="td">{this.state.objAlumnos[0].nom_programa}</td>
-                                    <td className="td">{this.state.objAlumnos[0].apePaterno + " " + this.state.objAlumnos[0].apeMaterno + " " + this.state.objAlumnos[0].nomAlumno}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <AR_tablaAsignacion objeto={this.state.alumRecibo}/>
                     ): (null)}
                 </div>
                 </div>

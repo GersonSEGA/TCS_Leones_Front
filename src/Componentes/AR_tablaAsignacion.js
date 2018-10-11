@@ -18,10 +18,15 @@ class AR_tablaAsignacion extends React.Component {
                 </thead>
                 <tbody>
                     <tr>
-                        <td className="td">{this.props.listaRecaudaciones[0].numero}</td>
-                        <td className="td">{this.props.listaAlumnos.codAlumno}</td>
-                        <td className="td">{this.props.listaAlumnos.nom_programa}</td>
-                        <td className="td">{this.props.listaAlumnos.apePaterno + " " + this.props.listaAlumnos.apeMaterno + " " + this.props.listaAlumnos.nomAlumno}</td>
+                        <td className="td">
+                            <form action="#">
+                                {this.props.objeto.numero}  
+                                <button className="btn btn-primary btn-lg" type="submit" onClick={this.detalles}>Detalles</button> 
+                            </form>
+                        </td>
+                        <td className="td">{this.props.objeto.codAlumno}</td>
+                        <td className="td">{this.props.objeto.nom_programa}</td>
+                        <td className="td">{this.props.objeto.nomAlumno}</td>
                     </tr>
                 </tbody>
             </table>
