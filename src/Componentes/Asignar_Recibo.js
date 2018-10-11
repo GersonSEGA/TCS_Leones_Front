@@ -3,6 +3,7 @@ import '../App.css';
 import {browserHistory} from 'react-router-3';
 import CONFIG from '../Configuracion/Config';
 import swal from 'sweetalert'
+import AR_tablaRecibo from './AR_tablaRecibo';
 import AR_tablaAsignacion from './AR_tablaAsignacion';
 
 class Asignar_Recibo extends React.Component {
@@ -38,6 +39,7 @@ class Asignar_Recibo extends React.Component {
 
         this.onSubmitRecibo = this.onSubmitRecibo.bind(this);
         this.onSubmitAlumno = this.onSubmitAlumno.bind(this);
+        this.buscarRecibo = this.buscarRecibo.bind(this);
         this.buscarDni = this.buscarDni.bind(this);
         this.buscarCodigo = this.buscarCodigo.bind(this);
         this.buscarApePaterno = this.buscarApePaterno.bind(this);
@@ -54,9 +56,15 @@ class Asignar_Recibo extends React.Component {
     }
 
     onSubmitRecibo = (e) => {
-        this.ValidarRecibo(this.state.rec);
-        console.log(this.state.rec,"recibo")
-        fetch(CONFIG + 'recaudaciones/rec/' + this.state.rec)
+        if(this.state.rec != ""){
+            this.buscarRecibo(this.state.rec);
+        }
+        e.preventDefault();
+    }
+
+    buscarRecibo = (rec) => {
+        this.ValidarRecibo(rec);
+        fetch(CONFIG + 'recaudaciones/rec/' + rec)
             .then((response )=> {
                 return response.json();
               })
@@ -65,21 +73,10 @@ class Asignar_Recibo extends React.Component {
                 console.log(this.state.buscar,"estadoSuccess")
                 if(recaudaciones.length > 0) {
                     this.state.buscar = true;
-                    this.setState((prevState, props) =>{
+                    this.setState((prevState, props) => {
                         return {objRecaudaciones: this.state.objRecaudaciones.concat(recaudaciones)}
                     });
-                    swal("Consulta realizada exitosamente!" ,"", "success")
-                    if(this.state.objRecaudaciones.length > 0){
-                        this.buscarAsignacion(this.state.objRecaudaciones[0].idAlum)
-                        console.log("---------");
-                        console.log(this.state.objAsignacion)
-                        if(this.state.objAsignacion.length != 0){
-                            this.buscarCodigo(this.state.objAsignacion[0].codAlumno);
-                            this.asignar();
-                        }else {
-                            console.log("No entró");
-                        }
-                    }
+                    swal("Consulta realizada exitosamente!" ,"", "success");
                 }else{
                     this.state.buscar=true;
                     swal("No se encontró informacion", "", "info");
@@ -87,11 +84,9 @@ class Asignar_Recibo extends React.Component {
             })
             .catch(error => {
                 this.state.buscar = false;
-                console.log(this.state.buscar,"estadoError")
                 swal("Oops, Algo salió mal!", "","error")
                 console.error(error)
             });
-            e.preventDefault();
     }
 
     buscarAsignacion = (idAlum) => {
@@ -143,7 +138,7 @@ class Asignar_Recibo extends React.Component {
 
     //----------------------------------------------------------------------------------------
 
-    buscarDni = (dni, e) => {
+    buscarDni = (dni) => {
         fetch(CONFIG + 'alumnoprograma/buscard/' + dni)
             .then((response) => {
                 return response.json();
@@ -381,7 +376,7 @@ class Asignar_Recibo extends React.Component {
                 <hr/>
                 <div className="SplitPane row">
                     {this.state.buscar?(
-                        <AR_tablaAsignacion objeto={this.state.alumRecibo}/>
+                        <AR_tablaRecibo objeto={this.state.objRecaudaciones}/>
                     ): (null)}
                 </div>
                 </div>
