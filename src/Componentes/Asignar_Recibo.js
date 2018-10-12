@@ -56,26 +56,76 @@ class Asignar_Recibo extends React.Component {
     }
 
     onSubmitRecibo = (e) => {
-        if(this.state.rec != ""){
-            this.buscarRecibo(this.state.rec);
+        this.ValidarRecibo(this.state.rec);
+        if(this.state.rec != null){
+            this.buscarRecibo(this.state.rec)
         }
         e.preventDefault();
     }
 
     buscarRecibo = (rec) => {
-        this.ValidarRecibo(rec);
         fetch(CONFIG + 'recaudaciones/rec/' + rec)
             .then((response )=> {
                 return response.json();
               })
             .then((recaudaciones) => {
-                console.log(recaudaciones,"recaudaciones");
-                console.log(this.state.buscar,"estadoSuccess")
+                console.log("---Recaudaciones---");
+                console.log(recaudaciones);
                 if(recaudaciones.length > 0) {
                     this.state.buscar = true;
                     this.setState((prevState, props) => {
                         return {objRecaudaciones: this.state.objRecaudaciones.concat(recaudaciones)}
                     });
+                    console.log("---ObjRecaudaciones---");
+                    console.log(this.state.objRecaudaciones);
+                    if(this.state.objRecaudaciones.length > 0){
+                        fetch(CONFIG + 'alumnoalumnoprograma/buscar/' + this.state.objRecaudaciones[0].idAlum)
+                            .then ((response) => {
+                                return response.json();
+                            })
+                            .then((asignacion) => {
+                                console.log("---Asignación---");
+                                console.log(asignacion);
+                                if(asignacion.length != 0){
+                                    this.setState((prevState, props) => {
+                                        return {objAsignacion: this.state.objAsignacion.concat(asignacion)}
+                                    });
+                                    console.log("---ObjAsignación---");
+                                    console.log(this.state.objAsignacion);
+                                    if(this.state.objAsignacion.length != 0){
+                                        fetch(CONFIG + 'alumnoprograma/buscarc/' + this.state.objAsignacion[0].codAlumno)
+                                            .then((response) => {
+                                                return response.json();
+                                            })
+                                            .then((alumnos) => {
+                                                console.log("---Alumnos---");
+                                                console.log(alumnos);
+                                                if(alumnos.length != 0){
+                                                    this.setState((prevState, props) => {
+                                                        return {objAlumnos: this.state.objAlumnos.concat(alumnos)}
+                                                    });
+                                                    console.log("---ObjAlumnos---");
+                                                    console.log(this.state.objAlumnos);
+                                                    if(this.state.objAlumnos.length > 0){
+                                                        this.asignar();
+                                                    }
+                                                } else{
+                                                    console.log(this.state.objAlumnos);
+                                                    swal("No se encontró informacion", "", "info");
+                                                }
+                                            })
+                                            .catch((error) => {
+                                                console.log(error);
+                                            });
+                                    }
+                                }
+                            })
+                            .catch((error) => {
+                                console.error(error)
+                            });
+                    }else {
+                        swal("No se encontró informacion", "", "info");
+                    }
                     swal("Consulta realizada exitosamente!" ,"", "success");
                 }else{
                     this.state.buscar=true;
@@ -83,8 +133,7 @@ class Asignar_Recibo extends React.Component {
                 }
             })
             .catch(error => {
-                this.state.buscar = false;
-                swal("Oops, Algo salió mal!", "","error")
+                this.state.buscar = false;  
                 console.error(error)
             });
     }
@@ -264,7 +313,7 @@ class Asignar_Recibo extends React.Component {
     }
 
     onSubmitAlumno = (e) => {
-        var dniValidado = this.Validar(this.state.dni, this.state.codigo, this.state.apePat, this.state.apeMat, this.state.nombre);
+        this.Validar(this.state.dni, this.state.codigo, this.state.apePat, this.state.apeMat, this.state.nombre);
         if(this.state.dni != '' && this.state.codigo == '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == ''){
             this.buscarDni(this.state.dni, e);
         } else if(this.state.dni == '' && this.state.codigo != '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == ''){
@@ -376,14 +425,14 @@ class Asignar_Recibo extends React.Component {
                 <hr/>
                 <div className="SplitPane row">
                     {this.state.buscar?(
-                        <AR_tablaRecibo objeto={this.state.objRecaudaciones}/>
+                        <AR_tablaAsignacion objeto={this.state.alumRecibo}/>
                     ): (null)}
                 </div>
                 </div>
                 <hr/>
                 <footer>
                     <div className="row center-xs centrar color">
-                        Realizado por Leones © 2018
+                        Realizado por Leones © 2018 
                     </div>
                 </footer>
             </div>
