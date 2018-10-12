@@ -425,7 +425,7 @@ class Asignar_Recibo extends React.Component {
                 <hr/>
                 <div className="SplitPane row">
                     {this.state.buscar?(
-                        <AR_tablaAsignacion objeto={this.state.alumRecibo}/>
+                        <AR_tablaAsignacion objeto={this.state.alumRecibo} listaRecaudaciones={this.state.objRecaudaciones}/>
                     ): (null)}
                 </div>
                 </div>

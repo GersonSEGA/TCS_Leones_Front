@@ -1,4 +1,5 @@
 import React from 'react'
+import AR_tablaRecibo from './AR_tablaRecibo';
 
 class AR_tablaAsignacion extends React.Component {
     constructor (props){
@@ -19,6 +20,7 @@ class AR_tablaAsignacion extends React.Component {
 
     render(){
         return(
+            <di>
             <table className="table">
                 <thead>
                     <tr>
@@ -42,6 +44,10 @@ class AR_tablaAsignacion extends React.Component {
                     </tr>
                 </tbody>
             </table>
+            {this.state.flag?(
+                <AR_tablaRecibo objeto={this.props.listaRecaudaciones}/>
+            ): (null)}
+            </di>
         )
     }
 }
