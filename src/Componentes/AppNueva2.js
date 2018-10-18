@@ -62,35 +62,33 @@ PagoAsignar(opcion) {
       return (
         <div className="">
           <h3>Estado de pagos
-          <ul id="nav-mobile" className="right  hide-on-med-and-down">
-              <li ><a className="seleccionar" onClick={this.Regresar} >Regresar<i className="material-icons right">reply</i></a></li>
-          </ul>
+            <ul id="nav-mobile" className="right  hide-on-med-and-down">
+              <li >
+                <a className="seleccionar" onClick={this.Regresar} >
+                  Regresar
+                  <i className="material-icons right">reply</i>
+                </a>
+              </li>
+            </ul>
           </h3>
           <hr />
           <div className="SplitPane row">
             <div className="col-xs-12">
-                <div>
-                <BuscarNuevo Busqueda={this.BuscarNombre} />
-              </div>
+              <BuscarNuevo Busqueda={this.BuscarNombre} />
             </div>  
           </div> 
           <hr/>
-            <div className="row center-xs centrar">
+          <div className="row center-xs centrar">
             <div className="center-xs-12 margin_top ">
-              
-                <PagoListNuevo2 Opcion={this.BuscarNombre} nombreBusqueda={this.state.nombre} nombre={this.state.nombre_select} funcion={this.Funcion} listado={this.state.pagocero}/>
-              
-            {/*   <div className="SplitPane row center-xs">  
-                <button  onClick={this.Asignar} className="waves-effect waves-light btn-large botonazul2 center"type="submit">Asignar<i className="large material-icons left">check</i></button>
-              </div> */}
+              <PagoListNuevo2 Opcion={this.BuscarNombre} nombreBusqueda={this.state.nombre} nombre={this.state.nombre_select} funcion={this.Funcion} listado={this.state.pagocero}/>
             </div>
-            </div>
-            <footer>
+          </div>
+          <footer>
             <div className="row center-xs centrar color">
-            Realizado por Hardcode © 2018 
+              Realizado por Leones
+               © 2018 
             </div>
-            </footer>
-
+          </footer>
         </div>
       )
   }

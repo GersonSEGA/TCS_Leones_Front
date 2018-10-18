@@ -3,8 +3,6 @@ import '../App.css';
 import {browserHistory} from 'react-router-3';
 import CONFIG from '../Configuracion/Config';
 import swal from 'sweetalert'
-import AR_tablaRecibo from './AR_tablaRecibo';
-import AR_tablaAsignacion from './AR_tablaAsignacion';
 
 class Asignar_Recibo extends React.Component {
 
@@ -424,9 +422,6 @@ class Asignar_Recibo extends React.Component {
                 </div>
                 <hr/>
                 <div className="SplitPane row">
-                    {this.state.buscar?(
-                        <AR_tablaAsignacion objeto={this.state.alumRecibo} listaRecaudaciones={this.state.objRecaudaciones}/>
-                    ): (null)}
                 </div>
                 </div>
                 <hr/>
