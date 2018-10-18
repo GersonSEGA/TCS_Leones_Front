@@ -60,19 +60,25 @@ class BuscarNuevo extends React.Component {
             this.setState({
                 value: selectedOption,
                 nomB: true,
-                recB: false
+                recB: false,
+                buscarRec: false,
+                asignarRec: false,
             });
         } else if(selectedOption.value == 'Búsqueda por recibo'){
             this.setState({
                 value: selectedOption,
                 nomB: false,
-                recB: true
+                recB: true,
+                buscarRec: false,
+                asignarRec: false,
             });
         } else{
             this.setState({
                 value: null,
                 nomB: false,
-                recB: false
+                recB: false,
+                buscarRec: false,
+                asignarRec: false,
             });
         }
     }
@@ -90,9 +96,9 @@ class BuscarNuevo extends React.Component {
                 },
                 method: "POST",
                 body: JSON.stringify ({
-                    'idAlum': this.state.objRecaudaciones[0].idAlum,
-                    'codAlumno': this.state.alumno.codAlumno,
-                    'idPrograma': this.state.alumno.idPrograma
+                    'id_Alum': this.state.objRecaudaciones[0].idAlum,
+                    'cod_Alumno': this.state.alumno.codAlumno,
+                    'id_Programa': this.state.alumno.idPrograma
                 })
             })
             .then((response) => {
