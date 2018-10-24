@@ -31,6 +31,8 @@ class BuscarNuevo extends React.Component {
             nombre: '',
             alumno: null,
             opcAlumno: [],
+            btnGuardar: false,
+            btnReasignar: false,
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -90,15 +92,18 @@ class BuscarNuevo extends React.Component {
     }
 
     onSubmitGuardar = (e) => {
+        console.log("---DATA---");
+        console.log(this.state.objRecaudaciones[0].idAlum);
+
         fetch(CONFIG + 'alumnoalumnoprograma/add', {
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 method: "POST",
                 body: JSON.stringify ({
-                    'id_Alum': this.state.objRecaudaciones[0].idAlum,
-                    'cod_Alumno': this.state.alumno.codAlumno,
-                    'id_Programa': this.state.alumno.idPrograma
+                    'idAlumno': this.state.objRecaudaciones[0].idAlum,
+                    'codAlumno': this.state.alumno.codAlumno,
+                    'idPrograma': this.state.alumno.idPrograma
                 })
             })
             .then((response) => {
@@ -114,6 +119,22 @@ class BuscarNuevo extends React.Component {
                 console.log(error);
             })
     } 
+
+    onSubmitReasignar = (e) =>{
+        fetch(CONFIG + 'actualizar/' + this.state.objRecaudaciones[0].idAlum + '/' + this.state.alumno.codAlumno + '/' + this.state.alumno.idPrograma)
+            .then((response) => {
+                if(response){
+                    console.log(response);
+                    swal("Guardado exitosamente", "", "success");
+                } else{
+                    swal("Oops, algo salió mal", "","error");
+                }
+            }) 
+            .catch((error) => {
+                swal("Oops, algo salió mal", "","error");
+            })
+        e.preventDefault();
+    }
 
     onSubmitNombre = (e) => {
         var nombres = this.nombre.value.toUpperCase();
@@ -145,7 +166,7 @@ class BuscarNuevo extends React.Component {
                     console.log(this.state.objRecaudaciones);
                     if(this.state.objRecaudaciones.length > 0){
                         this.setState({
-                            buscarRec: true
+                            buscarRec: true,
                         });
                         fetch(CONFIG + 'alumnoalumnoprograma/buscar/' + this.state.objRecaudaciones[0].idAlum)
                             .then((response) => {
@@ -275,10 +296,17 @@ class BuscarNuevo extends React.Component {
                                         </tr>
                                     </tbody>
                                 </table>
-                                <div className="col col-lg-2">
-                                    <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitGuardar}>
-                                        Guardar <i className="large material-icons left">save</i>
-                                    </button>
+                                <div className="row justify-content-md-center">
+                                    <div className="col col-lg-6">
+                                        <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitGuardar}>
+                                            Asignar <i className="large material-icons left">save</i>
+                                        </button>
+                                    </div>
+                                    <div className="col col-lg-6">
+                                        <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitReasignar}>
+                                            Reasignar <i className="large material-icons left">save</i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ): (null)}
@@ -310,12 +338,7 @@ class BuscarNuevo extends React.Component {
                         <div className="row justify-content-md-center">
                             <div className="col col-lg-2">
                                 <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitAsignar}>
-                                    Asignar <i className="large material-icons left">search</i>
-                                </button>
-                            </div>
-                            <div className="col col-lg-2">
-                                <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitReasignar}>
-                                    Reasignar <i className="large material-icons left">search</i>
+                                    Buscar <i className="large material-icons left">search</i>
                                 </button>
                             </div>
                         </div>
@@ -340,10 +363,6 @@ class BuscarNuevo extends React.Component {
         } else{
             swal("Lo sentimos, sólo puede llenar un campo para la búsqueda", "", "info");
         }
-        e.preventDefault();
-    }
-
-    onSubmitReasignar = (e) => {
         e.preventDefault();
     }
 
