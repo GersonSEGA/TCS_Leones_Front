@@ -121,7 +121,7 @@ class BuscarNuevo extends React.Component {
     } 
 
     onSubmitReasignar = (e) =>{
-        fetch(CONFIG + 'actualizar/' + this.state.objRecaudaciones[0].idAlum + '/' + this.state.alumno.codAlumno + '/' + this.state.alumno.idPrograma)
+        fetch(CONFIG + 'alumnoalumnoprograma/actualizar/' + this.state.objRecaudaciones[0].idAlum + '/' + this.state.alumno.codAlumno + '/' + this.state.alumno.idPrograma)
             .then((response) => {
                 if(response){
                     console.log(response);
