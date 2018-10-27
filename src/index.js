@@ -28,7 +28,6 @@ class Index extends React.Component {
             <Route path="/filtro/:name" component={VistaIntermedia}></Route>
             <Route path="/vista/nueva" component={AppNueva}></Route>
             <Route path="/vista/nueva2" component={AppNueva2}></Route>
-            <Route path="/vista/recibo" component={Asignar_Recibo}></Route>
             <Route path="/vista/tabla" component={ VistaTablaNuevo}></Route>
             <Route path="/vista/loginNyA" component={LoginFormNombreApellidos}></Route>
             <Route path="/vista/imprimir" component={ComponenteEditable}></Route>
