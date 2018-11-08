@@ -131,7 +131,6 @@ class LoginForm extends React.Component {
     <div className="nav-wrapper azul">
       <ul id="nav-mobile" className="right hide-on-med-and-down">
        {/*  <li><a onClick={this.VistaNueva} >VistaNueva</a></li> */}
-        <li><a onClick={this.VistaRecibo} >  <i className="small material-icons right">check_box</i>Asignar Recibo</a></li>
         <li><a onClick={this.VistaNueva2} >  <i className="small material-icons right">check_box</i>Asignar Programa</a></li>
         <li><a onClick={this.VistaTablaCreada} ><i className="small material-icons right">pageview</i>Ver tabla</a></li>
       </ul>
