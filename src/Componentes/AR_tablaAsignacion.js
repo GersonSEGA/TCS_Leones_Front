@@ -1,5 +1,5 @@
 import React from 'react'
-import AR_tablaRecibo from './AR_tablaRecibo';
+import AR_tablaRecibo from './AR_tableHeaderRecibo';
 
 class AR_tablaAsignacion extends React.Component {
     constructor (props){

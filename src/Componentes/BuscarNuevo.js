@@ -4,6 +4,7 @@ import Select from 'react-select'
 import swal from 'sweetalert'
 import CONFIG from '../Configuracion/Config';
 import AR_tableHeaderRecibo from './AR_tableHeaderRecibo'
+import AR_EstadoAsignacion from './AR_EstadoAsginacion';
 
 const opciones = [
     {value: 'Búsqueda por nombre', label: 'Búsqueda por nombre'},
@@ -33,6 +34,15 @@ class BuscarNuevo extends React.Component {
             opcAlumno: [],
             btnGuardar: false,
             btnReasignar: false,
+            detalleRecaudaciones: {
+                apeNom: '',
+                concepto: '',
+                recibo: '',
+                moneda: '',
+                importe: '',
+                fecha: '',
+            },
+            estado: false,
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -53,6 +63,7 @@ class BuscarNuevo extends React.Component {
         this.buscarApePaterno = this.buscarApePaterno.bind(this);
         this.buscarApeMaterno = this.buscarApeMaterno.bind(this);
         this.buscarNombre = this.buscarNombre.bind(this);
+        this.getDetalleRecaudaciones = this.getDetalleRecaudaciones.bind(this);
         this.Validar = this.Validar.bind(this);
 
     }
@@ -165,6 +176,7 @@ class BuscarNuevo extends React.Component {
                     console.log("---ObjRecaudaciones---");
                     console.log(this.state.objRecaudaciones);
                     if(this.state.objRecaudaciones.length > 0){
+                        this.getDetalleRecaudaciones(this.state.objRecaudaciones);
                         this.setState({
                             buscarRec: true,
                         });
@@ -194,6 +206,9 @@ class BuscarNuevo extends React.Component {
                                             console.log("---ObjAlumnos---");
                                             console.log(this.state.objAlumnos);
                                             if(this.state.objAlumnos.length > 0){
+                                                this.setState({
+                                                    estado: true,
+                                                });
                                                 swal("Este numero ya ha sido asignado", "", "success");
                                             }else{
                                                 console.log("Array de ObjAlumnos está vació");
@@ -224,6 +239,43 @@ class BuscarNuevo extends React.Component {
         e.preventDefault();
     }
 
+    getDetalleRecaudaciones = (objRec) => {
+        if(objRec[0].moneda == '108'){
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: objRec[0].apeNom,
+                    concepto: objRec[0].concepto,
+                    recibo: objRec[0].numero,
+                    moneda: 'Soles',
+                    importe: objRec[0].importe,
+                    fecha: objRec[0].fecha
+                }
+            });
+        } else if(objRec[0].moneda == '113'){
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: objRec[0].apeNom,
+                    concepto: objRec[0].concepto,
+                    recibo: objRec[0].numero,
+                    moneda: 'Dólares',
+                    importe: objRec[0].importe,
+                    fecha: objRec[0].fecha
+                }
+            });
+        } else{
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: objRec[0].apeNom,
+                    concepto: objRec[0].concepto,
+                    recibo: objRec[0].numero,
+                    moneda: '-',
+                    importe: objRec[0].importe,
+                    fecha: objRec[0].fecha
+                }
+            });
+        }
+    }
+ 
     onClickBuscar = (e) => {
         this.setState({
             asignarRec: true,
@@ -274,11 +326,17 @@ class BuscarNuevo extends React.Component {
                                     <tbody>
                                         <tr>
                                             <td className="td1">{1}</td>
-                                            <td className="td1">{this.state.objRecaudaciones[0].apeNom}</td>
-                                            <td className="td1">{this.state.objRecaudaciones[0].concepto}</td>
-                                            <td className="td1">{this.state.objRecaudaciones[0].numero}</td>
-                                            <td className="td1">{this.state.objRecaudaciones[0].importe}</td>
-                                            <td className="td1">{this.state.objRecaudaciones[0].fecha}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.apeNom}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.concepto}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.recibo}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.moneda}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
+                                            <td className="td1">
+                                                <div>
+                                                    <AR_EstadoAsignacion estadoAsignacion={this.state.estado} recaudaciones={this.state.objRecaudaciones} alumnos={this.state.objAlumnos}/>
+                                                </div>
+                                            </td>
                                             <td className="td1">
                                                 <form>
                                                     <div className="SplitPane row">
