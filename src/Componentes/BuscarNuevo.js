@@ -226,6 +226,7 @@ class BuscarNuevo extends React.Component {
                             });
                     } else{
                         console.log("Array de ObjRecaudaciones está vació");
+                        swal("Número de recibo incorrecto", "", "warning");
                     }
                 })
                 .catch((error) => {
@@ -333,9 +334,7 @@ class BuscarNuevo extends React.Component {
                                             <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
                                             <td className="td1">
-                                                <div>
-                                                    <AR_EstadoAsignacion estadoAsignacion={this.state.estado} recaudaciones={this.state.objRecaudaciones} alumnos={this.state.objAlumnos}/>
-                                                </div>
+                                                <AR_EstadoAsignacion estadoAsignacion={this.state.estado} recibo={this.state.objRecaudaciones} alumno={this.state.objAlumnos}/>
                                             </td>
                                             <td className="td1">
                                                 <form>
