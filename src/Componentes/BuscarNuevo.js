@@ -4,7 +4,8 @@ import Select from 'react-select'
 import swal from 'sweetalert'
 import CONFIG from '../Configuracion/Config';
 import AR_tableHeaderRecibo from './AR_tableHeaderRecibo'
-import AR_EstadoAsignacion from './AR_EstadoAsginacion';
+import AR_EstadoAsignacion from './AR_EstadoAsginacion'
+import AR_BusquedaNombre from './AR_BusquedaNombre'
 
 const opciones = [
     {value: 'Búsqueda por nombre', label: 'Búsqueda por nombre'},
@@ -20,20 +21,24 @@ class BuscarNuevo extends React.Component {
             value: {value: 'Búsqueda por nombre', label: 'Búsqueda por nombre'},
             nomB: true,
             recB: false,
+
             objRecaudaciones: [],
             objAlumnos: [],
             ObjAsignación: [],
+
             buscarRec: false,
             asignarRec: false,
+
             dni: '',
             codigo: '',
-            apePat: '',
-            apeMat: '',
-            nombre: '',
+            apeNom: '',
+
             alumno: null,
             opcAlumno: [],
+
             btnGuardar: false,
             btnReasignar: false,
+
             detalleRecaudaciones: {
                 apeNom: '',
                 concepto: '',
@@ -42,28 +47,34 @@ class BuscarNuevo extends React.Component {
                 importe: '',
                 fecha: '',
             },
+
             estado: false,
         }
 
         this.handleChange = this.handleChange.bind(this);
+
         this.handleChangeAlumno = this.handleChangeAlumno.bind(this);
+
         this.onSubmitNombre = this.onSubmitNombre.bind(this);
         this.onSubmitRecibo = this.onSubmitRecibo.bind(this);
+
         this.onSubmitAsignar = this.onSubmitAsignar.bind(this);
         this.onSubmitReasignar = this.onSubmitReasignar.bind(this);
+
         this.onSubmitGuardar = this.onSubmitGuardar.bind(this);
+
         this.onChangeDni = this.onChangeDni.bind(this);
         this.onChangeCodigo = this.onChangeCodigo.bind(this);
-        this.onChangeApePaterno = this.onChangeApePaterno.bind(this);
-        this.onChangeApeMaterno = this.onChangeApeMaterno.bind(this);
-        this.onChangeNombre = this.onChangeNombre.bind(this);
+        this.onChangeApeNom = this.onChangeApeNom.bind(this);
+
         this.onClickBuscar = this.onClickBuscar.bind(this);
+
         this.buscarDni = this.buscarDni.bind(this);
         this.buscarCodigo = this.buscarCodigo.bind(this);
-        this.buscarApePaterno = this.buscarApePaterno.bind(this);
-        this.buscarApeMaterno = this.buscarApeMaterno.bind(this);
-        this.buscarNombre = this.buscarNombre.bind(this);
+        this.buscarApellidoNombre = this.buscarApellidoNombre.bind(this);
+
         this.getDetalleRecaudaciones = this.getDetalleRecaudaciones.bind(this);
+
         this.Validar = this.Validar.bind(this);
 
     }
@@ -379,16 +390,8 @@ class BuscarNuevo extends React.Component {
                             <div className="col col-lg-2">
                                 <input className="autoomplete" value={this.state.codigo} onChange={this.onChangeCodigo} placeholder="Código"></input>
                             </div>
-                            <div className="col col-lg-2">
-                                <input className="autocomplete" value={this.state.apePat} onChange={this.onChangeApePaterno} placeholder="Apellido paterno"></input>
-                            </div>
-                        </div>
-                        <div className="row justify-content-md-center">
-                            <div className="col col-lg-2">
-                                <input className="autocomplete" value={this.state.apeMat} onChange={this.onChangeApeMaterno} placeholder="Apellido Materno"></input>
-                            </div>
-                            <div className="col col-lg-2">
-                                <input className="autocomplete" value={this.state.nombre} onChange={this.onChangeNombre} placeholder="Nombres"></input>
+                            <div className="col col-lg-4">
+                                <input className="autocomplete" value={this.state.apeNom} onChange={this.onChangeApeNom} placeholder="Apellidos y Nombres"></input>
                             </div>
                         </div>
                         <br/>
@@ -407,16 +410,12 @@ class BuscarNuevo extends React.Component {
 
     onSubmitAsignar = (e) => {
         this.Validar(this.state.dni, this.state.codigo, this.state.apePat, this.state.apeMat, this.state.nombre);
-        if(this.state.dni != '' && this.state.codigo == '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == ''){
+        if(this.state.dni != '' && this.state.codigo == '' && this.state.apeNom == ''){
             this.buscarDni(this.state.dni, e);
-        } else if(this.state.dni == '' && this.state.codigo != '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == ''){
+        } else if(this.state.dni == '' && this.state.codigo != '' && this.state.apeNom == ''){
            this.buscarCodigo(this.state.codigo, e);
-        } else if(this.state.dni == '' && this.state.codigo == '' && this.state.apePat != '' && this.state.apeMat == '' && this.state.nombre == ''){
-            this.buscarApePaterno(this.state.apePat, e);
-        } else if(this.state.dni == '' && this.state.codigo == '' && this.state.apePat == '' && this.state.apeMat != '' && this.state.nombre == ''){
-            this.buscarApeMaterno(this.state.apeMat, e);
-        } else if(this.state.dni == '' && this.state.codigo == '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre != ''){
-            this.buscarNombre(this.state.nombre, e);
+        } else if(this.state.dni == '' && this.state.codigo == '' && this.state.apeNom != ''){
+            this.buscarApellidoNombre(this.state.apeNom, e);
         } else{
             swal("Lo sentimos, sólo puede llenar un campo para la búsqueda", "", "info");
         }
@@ -437,24 +436,10 @@ class BuscarNuevo extends React.Component {
         });
     }
 
-    onChangeApePaterno = (e) => {
+    onChangeApeNom = (e) => {
         e.preventDefault();
         this.setState({
-            apePat: e.target.value
-        });
-    }
-
-    onChangeApeMaterno = (e) => {
-        e.preventDefault();
-        this.setState({
-            apeMat: e.target.value
-        });
-    }
-
-    onChangeNombre = (e) => {
-        e.preventDefault();
-        this.setState({
-            nombre: e.target.value
+            apeNom: e.target.value
         });
     }
 
@@ -521,9 +506,22 @@ class BuscarNuevo extends React.Component {
             });
     }
 
-    buscarApePaterno = (apePaterno, e) => {
-        console.log(this.state.apePat, "Apellido Paterno");
-        fetch(CONFIG + 'alumnoprograma/leer/' + apePaterno)
+    buscarApellidoNombre = (apellidoNombre, e) => {
+        console.log(this.state.apePat, "Apellidos y Nombres");
+
+        var nombre = apellidoNombre;
+        var separador = ' ';
+        var arregloCadenas = nombre.split(separador);
+        var arreglo = [];
+
+        for(let i = 0; i < arregloCadenas.length; i++){
+            if(arregloCadenas[i] != ''){
+                arreglo.push(arregloCadenas[i]);
+            }
+        }
+        var nuevoNombre = arreglo.join('&');
+
+        fetch(CONFIG + 'alumnoprograma/leer/' + nuevoNombre)
             .then((response) => {
                 return response.json();
             })
@@ -553,72 +551,8 @@ class BuscarNuevo extends React.Component {
             });
     }
 
-    buscarApeMaterno = (apeMaterno, e) => {
-        console.log(this.state.apeMat, "Apellido Materno");
-        fetch(CONFIG + 'alumnoprograma/leer/' + apeMaterno)
-            .then((response) => {
-                return response.json();
-            })
-            .then((alumnos) => {
-                console.log("---Alumnos---");
-                console.log(alumnos);
-                var Array = [];
-                for(var i = 0; i < alumnos.length; i++){
-                    var e = {
-                        codAlumno: alumnos[i].codAlumno,
-                        idPrograma: alumnos[i].idPrograma, 
-                        value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
-                        label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
-                    }
-                    Array.push(e);
-                }
-                this.setState({
-                    opcAlumno: Array,
-                    objAlumnos: alumnos,
-                    asignarRec: false,
-                });
-                swal("Consulta realizada exitosamente!", "", "success");
-            })
-            .catch((error) => {
-                swal("Algo salío mal", "", "error");
-                console.log(error);
-            });
-    }
-
-    buscarNombre = (nombre, e) => {
-        console.log(this.state.apeMat, "Nombre");
-        fetch(CONFIG + 'alumnoprograma/leer/' + nombre)
-            .then((response) => {
-                return response.json();
-            })
-            .then((alumnos) => {
-                console.log("---Alumnos---");
-                console.log(alumnos);
-                var Array = [];
-                for(var i = 0; i < alumnos.length; i++){
-                    var e = {
-                        codAlumno: alumnos[i].codAlumno,
-                        idPrograma: alumnos[i].idPrograma, 
-                        value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
-                        label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
-                    }
-                    Array.push(e);
-                }
-                this.setState({
-                    opcAlumno: Array,
-                    objAlumnos: alumnos,
-                    asignarRec: false,
-                });
-                swal("Consulta realizada exitosamente!", "", "success");
-            })
-            .catch((error) => {
-                swal("Algo salío mal", "", "error");
-                console.log(error);
-            });
-    }
-
-    Validar(dni, codigo, apePat, apeMat, nombre){
-        if(dni == '' && codigo == '' && apePat == '' && apeMat == '' && nombre == ''){
+    Validar(dni, codigo, apellidoNombre){
+        if(dni == '' && codigo == '' && apellidoNombre == ''){
             swal("Ingrese uno de los campos para realizar la búsqueda", "", "info");
             return false;
         } else{

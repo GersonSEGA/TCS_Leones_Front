@@ -143,7 +143,6 @@ Asignar=(e)=>{
     /*
     console.log("alumno-alumno programa generado a insertar");
     console.log(pagoinsertar)
-
   
 */
     for (let i = 0; i < pagoinsertar.length; i++) {
