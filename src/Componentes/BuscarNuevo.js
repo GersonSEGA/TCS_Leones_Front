@@ -47,7 +47,6 @@ class BuscarNuevo extends React.Component {
                 apeNom: '',
                 concepto: '',
                 recibo: '',
-                moneda: '',
                 importe: '',
                 fecha: '',
             },
@@ -290,8 +289,7 @@ class BuscarNuevo extends React.Component {
                     apeNom: objRec[0].apeNom,
                     concepto: objRec[0].concepto,
                     recibo: objRec[0].numero,
-                    moneda: 'Soles',
-                    importe: objRec[0].importe,
+                    importe: 'S/ ' + objRec[0].importe,
                     fecha: objRec[0].fecha
                 }
             });
@@ -301,8 +299,7 @@ class BuscarNuevo extends React.Component {
                     apeNom: objRec[0].apeNom,
                     concepto: objRec[0].concepto,
                     recibo: objRec[0].numero,
-                    moneda: 'Dólares',
-                    importe: objRec[0].importe,
+                    importe: '$ ' + objRec[0].importe,
                     fecha: objRec[0].fecha
                 }
             });
@@ -312,7 +309,6 @@ class BuscarNuevo extends React.Component {
                     apeNom: objRec[0].apeNom,
                     concepto: objRec[0].concepto,
                     recibo: objRec[0].numero,
-                    moneda: '-',
                     importe: objRec[0].importe,
                     fecha: objRec[0].fecha
                 }
@@ -373,7 +369,6 @@ class BuscarNuevo extends React.Component {
                                             <td className="td1">{this.state.detalleRecaudaciones.apeNom}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.concepto}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.recibo}</td>
-                                            <td className="td1">{this.state.detalleRecaudaciones.moneda}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
                                             <td className="td1">
