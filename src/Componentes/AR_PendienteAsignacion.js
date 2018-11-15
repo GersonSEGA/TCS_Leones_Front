@@ -6,6 +6,10 @@ class AR_PendienteAsignacion extends React.Component {
 
     constructor(props){
         super(props);
+
+        this.state = {
+            
+        }
     }
 
     render() {

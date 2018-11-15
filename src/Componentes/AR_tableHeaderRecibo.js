@@ -14,6 +14,7 @@ class AR_tableHeaderRecibo extends React.Component {
                     <th className="th">Nombre Apellido</th>
                     <th className="th">Concepto</th>
                     <th className="th">Recibo</th>
+                    <th className="th">Moneda</th>
                     <th className="th">Importe</th>
                     <th className="th">Fecha</th>
                     <th className="th">Estado</th>
