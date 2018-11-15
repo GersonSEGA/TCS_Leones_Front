@@ -6,10 +6,12 @@ import CONFIG from '../Configuracion/Config';
 import AR_tableHeaderRecibo from './AR_tableHeaderRecibo'
 import AR_EstadoAsignacion from './AR_EstadoAsginacion'
 import AR_BusquedaNombre from './AR_BusquedaNombre'
+import AR_PendienteAsignacion from './AR_PendienteAsignacion';
 
 const opciones = [
     {value: 'Búsqueda por nombre', label: 'Búsqueda por nombre'},
-    {value: 'Búsqueda por recibo', label: 'Búsqueda por recibo'}
+    {value: 'Búsqueda por recibo', label: 'Búsqueda por recibo'},
+    {value: 'Pendiente de asignación', label: 'Pendiente de asignación'}
 ];
 
 class BuscarNuevo extends React.Component {
@@ -21,10 +23,12 @@ class BuscarNuevo extends React.Component {
             value: {value: 'Búsqueda por nombre', label: 'Búsqueda por nombre'},
             nomB: true,
             recB: false,
+            posgradoB: false,
 
             objRecaudaciones: [],
             objAlumnos: [],
             ObjAsignación: [],
+            objPendienteAsignacion: [],
 
             buscarRec: false,
             asignarRec: false,
@@ -85,6 +89,7 @@ class BuscarNuevo extends React.Component {
                 value: selectedOption,
                 nomB: true,
                 recB: false,
+                posgradoB: false,
                 buscarRec: false,
                 asignarRec: false,
             });
@@ -93,17 +98,20 @@ class BuscarNuevo extends React.Component {
                 value: selectedOption,
                 nomB: false,
                 recB: true,
+                posgradoB: false,
                 buscarRec: false,
                 asignarRec: false,
             });
-        } else{
+        } else if(selectedOption.value == 'Pendiente de asignación'){
             this.setState({
-                value: null,
+                value: selectedOption,
                 nomB: false,
                 recB: false,
+                posgradoB: true,
                 buscarRec: false,
                 asignarRec: false,
             });
+            this.onSubmitRecaudaciones();
         }
     }
 
@@ -251,6 +259,30 @@ class BuscarNuevo extends React.Component {
         e.preventDefault();
     }
 
+    onSubmitRecaudaciones = (e) => {
+        fetch(CONFIG + 'recaudaciones/listar/posgrado')
+            .then((response) => {
+                return response.json();
+            })
+            .then((pendienteAsignacion) => {
+                console.log("---PendienteAsignacion---");
+                console.log(pendienteAsignacion);
+                this.setState({
+                    objPendienteAsignacion: pendienteAsignacion,
+                })
+                console.log("---ObjPendienteAsignacion---");
+                console.log(this.state.objPendienteAsignacion);
+                if(this.state.objPendienteAsignacion.length > 0){
+                    swal("Consulta realizada exitosamente", " ", "success");
+                }else{
+                    swal("No hay pendientes por asignación", " ", "info")
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
+
     getDetalleRecaudaciones = (objRec) => {
         if(objRec[0].moneda == '108'){
             this.setState({
@@ -378,6 +410,11 @@ class BuscarNuevo extends React.Component {
                                 </div>
                             </div>
                         ): (null)}
+                    </div>
+                ): (null)}
+                {this.state.posgradoB?(
+                    <div className="row justify-content-md-center">
+                        <AR_PendienteAsignacion listPendienteAsignacion={this.state.objPendienteAsignacion}/>
                     </div>
                 ): (null)}
                 <hr/>
