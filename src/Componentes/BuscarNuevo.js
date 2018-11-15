@@ -4,12 +4,15 @@ import Select from 'react-select'
 import swal from 'sweetalert'
 import CONFIG from '../Configuracion/Config';
 import AR_tableHeaderRecibo from './AR_tableHeaderRecibo'
+import AR_tableHeaderReciboPendiente from './AR_tableHeaderReciboPendiente'
+
 import AR_EstadoAsignacion from './AR_EstadoAsginacion'
 import AR_BusquedaNombre from './AR_BusquedaNombre'
 
 const opciones = [
     {value: 'Búsqueda por nombre', label: 'Búsqueda por nombre'},
-    {value: 'Búsqueda por recibo', label: 'Búsqueda por recibo'}
+    {value: 'Búsqueda por recibo', label: 'Búsqueda por recibo'},
+    {value: 'Pendiente', label:'Pendiente'}
 ];
 
 class BuscarNuevo extends React.Component {
@@ -40,6 +43,7 @@ class BuscarNuevo extends React.Component {
             btnReasignar: false,
 
             detalleRecaudaciones: {
+                ape_Nom:'',
                 apeNom: '',
                 concepto: '',
                 recibo: '',
@@ -57,6 +61,7 @@ class BuscarNuevo extends React.Component {
 
         this.onSubmitNombre = this.onSubmitNombre.bind(this);
         this.onSubmitRecibo = this.onSubmitRecibo.bind(this);
+        this.onSubmitPendiente=this.onSubmitPendiente.bind(this);
 
         this.onSubmitAsignar = this.onSubmitAsignar.bind(this);
         this.onSubmitReasignar = this.onSubmitReasignar.bind(this);
@@ -81,6 +86,7 @@ class BuscarNuevo extends React.Component {
 
     handleChange = (selectedOption) => {
         if(selectedOption.value == 'Búsqueda por nombre'){
+
             this.setState({
                 value: selectedOption,
                 nomB: true,
@@ -96,6 +102,15 @@ class BuscarNuevo extends React.Component {
                 buscarRec: false,
                 asignarRec: false,
             });
+        } else if(selectedOption.value == 'Pendiente'){
+            this.setState({
+                value: selectedOption,
+                nomB: false,
+                recB: true,
+                buscarRec: false,
+                asignarRec: false,
+            });
+            this.onSubmitPendiente();
         } else{
             this.setState({
                 value: null,
@@ -157,7 +172,83 @@ class BuscarNuevo extends React.Component {
             })
         e.preventDefault();
     }
-
+    onSubmitPendiente = (e) => {
+        console.log("Holi")
+            fetch(CONFIG + 'recaudaciones/listar/posgrado')
+                .then((response) => {
+                    return response.json();
+                })
+                .then((recaudaciones) => {
+                    console.log("---Recaudaciones---");
+                    console.log(recaudaciones);
+                    this.setState({
+                        objRecaudaciones: recaudaciones
+                    });
+                    console.log("---ObjRecaudaciones---");
+                    console.log(this.state.objRecaudaciones);
+                    if(this.state.objRecaudaciones.length > 0){
+                        this.getDetalleRecaudaciones(this.state.objRecaudaciones);
+                        this.setState({
+                            buscarRecPen: true,
+                        });
+                        fetch(CONFIG + 'alumnoalumnoprograma/buscar/' + this.state.objRecaudaciones[0].idAlum)
+                            .then((response) => {
+                                return response.json();
+                            })
+                            .then((asignacion) => {
+                                console.log("---Asignación---");
+                                console.log(asignacion);
+                                this.setState({
+                                    ObjAsignación: asignacion
+                                });
+                                console.log("---ObjAsignación---");
+                                console.log(this.state.ObjAsignación);
+                                if(this.state.ObjAsignación.length != 0){
+                                    fetch(CONFIG + 'alumnoprograma/buscarc/' + this.state.ObjAsignación.codAlumno)
+                                        .then((response) => {
+                                            return response.json();
+                                        })
+                                        .then((alumnos) => {
+                                            console.log("---Alumnos---");
+                                            console.log(alumnos);
+                                            this.setState({
+                                                objAlumnos: alumnos
+                                            });
+                                            console.log("---ObjAlumnos---");
+                                            console.log(this.state.objAlumnos);
+                                            if(this.state.objAlumnos.length > 0){
+                                                this.setState({
+                                                    estado: true,
+                                                });
+                                                swal("Este numero ya ha sido asignado", "", "success");
+                                            }else{
+                                                console.log("Array de ObjAlumnos está vació");
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            console.log(error);
+                                        });
+                                } else{
+                                    console.log("Array de ObjAsignacion está vació");
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                    } else{
+                        console.log("Array de ObjRecaudaciones está vació");
+                        swal("Número de recibo incorrecto", "", "warning");
+                    }
+                })
+                .catch((error) => {
+                    this.setState({
+                        buscarRec: false
+                    });
+                    swal("Algo salió mal", "", "warning")
+                    console.log(error);
+                });
+        
+    }
     onSubmitNombre = (e) => {
         var nombres = this.nombre.value.toUpperCase();
         if(!nombres){
@@ -250,11 +341,12 @@ class BuscarNuevo extends React.Component {
         }
         e.preventDefault();
     }
-
     getDetalleRecaudaciones = (objRec) => {
+        console.log("objRec",objRec)
         if(objRec[0].moneda == '108'){
             this.setState({
                 detalleRecaudaciones: {
+                    ape_nom:objRec[0].ape_nom,
                     apeNom: objRec[0].apeNom,
                     concepto: objRec[0].concepto,
                     recibo: objRec[0].numero,
@@ -266,6 +358,7 @@ class BuscarNuevo extends React.Component {
         } else if(objRec[0].moneda == '113'){
             this.setState({
                 detalleRecaudaciones: {
+                    ape_nom:objRec[0].ape_nom,
                     apeNom: objRec[0].apeNom,
                     concepto: objRec[0].concepto,
                     recibo: objRec[0].numero,
@@ -277,6 +370,7 @@ class BuscarNuevo extends React.Component {
         } else{
             this.setState({
                 detalleRecaudaciones: {
+                    ape_nom:objRec[0].ape_nom,
                     apeNom: objRec[0].apeNom,
                     concepto: objRec[0].concepto,
                     recibo: objRec[0].numero,
@@ -335,6 +429,7 @@ class BuscarNuevo extends React.Component {
                             <div className="row justify-content-md-center">
                                 <table className="table">
                                     <AR_tableHeaderRecibo/>
+                                    
                                     <tbody>
                                         <tr>
                                             <td className="td1">{1}</td>
@@ -347,6 +442,50 @@ class BuscarNuevo extends React.Component {
                                             <td className="td1">
                                                 <AR_EstadoAsignacion estadoAsignacion={this.state.estado} recibo={this.state.objRecaudaciones} alumno={this.state.objAlumnos}/>
                                             </td>
+                                            <td className="td1">
+                                                <form>
+                                                    <div className="SplitPane row">
+                                                        <div className="col-xs-10">
+                                                            <Select value={this.state.alumno} onChange={this.handleChangeAlumno} options={this.state.opcAlumno}/>
+                                                        </div>
+                                                        <div className="col-xs-1">
+                                                            <button className="waves-effect waves-light btn-small" onClick={this.onClickBuscar}>
+                                                                <i className="large material-icons left">search</i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div className="row justify-content-md-center">
+                                    <div className="col col-lg-6">
+                                        <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitGuardar}>
+                                            Asignar <i className="large material-icons left">save</i>
+                                        </button>
+                                    </div>
+                                    <div className="col col-lg-6">
+                                        <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitReasignar}>
+                                            Reasignar <i className="large material-icons left">save</i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ): (null)}
+                        {this.state.buscarRecPen?(
+                            <div className="row justify-content-md-center">
+                                <table className="table">
+                                    <AR_tableHeaderReciboPendiente/>
+                                    <tbody>
+                                        <tr>
+                                            <td className="td1">{1}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.ape_nom}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.concepto}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.recibo}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.moneda}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
                                             <td className="td1">
                                                 <form>
                                                     <div className="SplitPane row">
