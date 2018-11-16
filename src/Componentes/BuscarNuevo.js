@@ -41,7 +41,7 @@ class BuscarNuevo extends React.Component {
 
             btnGuardar: false,
             btnReasignar: false,
-
+            detalleRecaudacionesPendientes:[],
             detalleRecaudaciones: {
                 ape_Nom:'',
                 apeNom: '',
@@ -187,54 +187,12 @@ class BuscarNuevo extends React.Component {
                     console.log("---ObjRecaudaciones---");
                     console.log(this.state.objRecaudaciones);
                     if(this.state.objRecaudaciones.length > 0){
-                        this.getDetalleRecaudaciones(this.state.objRecaudaciones);
+                        this.getDetalleRecaudacionesPendiente(this.state.objRecaudaciones);
+                        console.log("-----detaPEnd-----")
+                        console.log(this.state.detalleRecaudacionesPendientes)
                         this.setState({
                             buscarRecPen: true,
                         });
-                        fetch(CONFIG + 'alumnoalumnoprograma/buscar/' + this.state.objRecaudaciones[0].idAlum)
-                            .then((response) => {
-                                return response.json();
-                            })
-                            .then((asignacion) => {
-                                console.log("---Asignación---");
-                                console.log(asignacion);
-                                this.setState({
-                                    ObjAsignación: asignacion
-                                });
-                                console.log("---ObjAsignación---");
-                                console.log(this.state.ObjAsignación);
-                                if(this.state.ObjAsignación.length != 0){
-                                    fetch(CONFIG + 'alumnoprograma/buscarc/' + this.state.ObjAsignación.codAlumno)
-                                        .then((response) => {
-                                            return response.json();
-                                        })
-                                        .then((alumnos) => {
-                                            console.log("---Alumnos---");
-                                            console.log(alumnos);
-                                            this.setState({
-                                                objAlumnos: alumnos
-                                            });
-                                            console.log("---ObjAlumnos---");
-                                            console.log(this.state.objAlumnos);
-                                            if(this.state.objAlumnos.length > 0){
-                                                this.setState({
-                                                    estado: true,
-                                                });
-                                                swal("Este numero ya ha sido asignado", "", "success");
-                                            }else{
-                                                console.log("Array de ObjAlumnos está vació");
-                                            }
-                                        })
-                                        .catch((error) => {
-                                            console.log(error);
-                                        });
-                                } else{
-                                    console.log("Array de ObjAsignacion está vació");
-                                }
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                            });
                     } else{
                         console.log("Array de ObjRecaudaciones está vació");
                         swal("Número de recibo incorrecto", "", "warning");
@@ -341,8 +299,59 @@ class BuscarNuevo extends React.Component {
         }
         e.preventDefault();
     }
+    getDetalleRecaudacionesPendiente=(objRec)=>{
+        console.log("objRec",objRec);
+        this.setState({
+            detalleRecaudacionesPendientes:objRec
+        })
+        // for(var i=0;i<objRec.length;i++){
+        //     if(objRec[i].moneda=='108'){
+        //         //console.log("entro",objRec[i].moneda)
+        //         this.setState({
+        //             detalleRecaudacionesPendientes:
+        //                 {
+        //                     ape_nom:objRec[i].ape_nom,
+        //                     apeNom: objRec[i].apeNom,
+        //                     concepto: objRec[i].concepto,
+        //                     recibo: objRec[i].numero,
+        //                     moneda: 'Soles',
+        //                     importe: objRec[i].importe,
+        //                     fecha: objRec[i].fecha 
+        //                 }[i]
+        //         })
+        //     }else if(objRec[i].moneda=='113'){
+        //         this.setState({
+        //             detalleRecaudacionesPendientes:
+        //                 {
+        //                     ape_nom:objRec[i].ape_nom,
+        //                     apeNom: objRec[i].apeNom,
+        //                     concepto: objRec[i].concepto,
+        //                     recibo: objRec[i].numero,
+        //                     moneda: 'Dólares',
+        //                     importe: objRec[i].importe,
+        //                     fecha: objRec[i].fecha 
+        //                 }[i]
+        //         })
+        //     }else{
+        //         this.setState({
+        //             detalleRecaudacionesPendientes:
+        //                 {
+        //                     ape_nom:objRec[i].ape_nom,
+        //                     apeNom: objRec[i].apeNom,
+        //                     concepto: objRec[i].concepto,
+        //                     recibo: objRec[i].numero,
+        //                     moneda: '-',
+        //                     importe: objRec[i].importe,
+        //                     fecha: objRec[i].fecha 
+        //                 }[i]
+        //         })
+        //     }
+        // }
+        console.log("DETALLE RECAUDACIONES PENDIENTES")
+        console.log(this.state.detalleRecaudacionesPendientes)
+    }
     getDetalleRecaudaciones = (objRec) => {
-        console.log("objRec",objRec)
+        //console.log("objRec",objRec)
         if(objRec[0].moneda == '108'){
             this.setState({
                 detalleRecaudaciones: {
@@ -429,7 +438,6 @@ class BuscarNuevo extends React.Component {
                             <div className="row justify-content-md-center">
                                 <table className="table">
                                     <AR_tableHeaderRecibo/>
-                                    
                                     <tbody>
                                         <tr>
                                             <td className="td1">{1}</td>
@@ -478,29 +486,17 @@ class BuscarNuevo extends React.Component {
                                 <table className="table">
                                     <AR_tableHeaderReciboPendiente/>
                                     <tbody>
-                                        <tr>
-                                            <td className="td1">{1}</td>
-                                            <td className="td1">{this.state.detalleRecaudaciones.ape_nom}</td>
-                                            <td className="td1">{this.state.detalleRecaudaciones.concepto}</td>
-                                            <td className="td1">{this.state.detalleRecaudaciones.recibo}</td>
-                                            <td className="td1">{this.state.detalleRecaudaciones.moneda}</td>
-                                            <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
-                                            <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
-                                            <td className="td1">
-                                                <form>
-                                                    <div className="SplitPane row">
-                                                        <div className="col-xs-10">
-                                                            <Select value={this.state.alumno} onChange={this.handleChangeAlumno} options={this.state.opcAlumno}/>
-                                                        </div>
-                                                        <div className="col-xs-1">
-                                                            <button className="waves-effect waves-light btn-small" onClick={this.onClickBuscar}>
-                                                                <i className="large material-icons left">search</i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </td>
-                                        </tr>
+                                    {this.state.detalleRecaudacionesPendientes.map((pend,i)=>
+                                    <tr key={i}>
+                                        <td className="td1">{i+1}</td>
+                                        <td className="td1">{pend.ape_nom}</td>
+                                        <td className="td1">{pend.concepto}</td>
+                                        <td className="td1">{pend.recibo}</td>
+                                        <td className="td1">{pend.moneda}</td>
+                                        <td className="td1">{pend.importe}</td>
+                                        <td className="td1">{pend.fecha}</td>
+                                    </tr>
+                                    )}
                                     </tbody>
                                 </table>
                                 <div className="row justify-content-md-center">
