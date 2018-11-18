@@ -28,6 +28,7 @@ class BuscarNuevo extends React.Component {
             objRecaudaciones: [],
             objAlumnos: [],
             ObjAsignación: [],
+
             objPendienteAsignacion: [],
 
             buscarRec: false,
@@ -35,7 +36,9 @@ class BuscarNuevo extends React.Component {
 
             dni: '',
             codigo: '',
-            apeNom: '',
+            apePat: '',
+            apeMat: '',
+            nombre: '',
 
             alumno: null,
             opcAlumno: [],
@@ -63,13 +66,16 @@ class BuscarNuevo extends React.Component {
         this.onSubmitRecibo = this.onSubmitRecibo.bind(this);
 
         this.onSubmitAsignar = this.onSubmitAsignar.bind(this);
-        this.onSubmitReasignar = this.onSubmitReasignar.bind(this);
 
         this.onSubmitGuardar = this.onSubmitGuardar.bind(this);
+        this.onSubmitReasignar = this.onSubmitReasignar.bind(this);
+        this.onSubmitEliminar = this.onSubmitEliminar.bind(this);
 
         this.onChangeDni = this.onChangeDni.bind(this);
         this.onChangeCodigo = this.onChangeCodigo.bind(this);
-        this.onChangeApeNom = this.onChangeApeNom.bind(this);
+        this.onChangeApePaterno = this.onChangeApePaterno.bind(this);
+        this.onChangeApeMaterno = this.onChangeApeMaterno.bind(this);
+        this.onChangeNombre = this.onChangeNombre.bind(this);
 
         this.onClickBuscar = this.onClickBuscar.bind(this);
 
@@ -121,51 +127,6 @@ class BuscarNuevo extends React.Component {
         });
     }
 
-    onSubmitGuardar = (e) => {
-        console.log("---DATA---");
-        console.log(this.state.objRecaudaciones[0].idAlum);
-
-        fetch(CONFIG + 'alumnoalumnoprograma/add', {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                method: "POST",
-                body: JSON.stringify ({
-                    'idAlumno': this.state.objRecaudaciones[0].idAlum,
-                    'codAlumno': this.state.alumno.codAlumno,
-                    'idPrograma': this.state.alumno.idPrograma
-                })
-            })
-            .then((response) => {
-                console.log(response);
-                if(response){
-                    swal("guardado exitosamente!", "","success");
-                }else{
-                    swal("Oops, Algo salió mal!!", "","error");
-                }
-            })
-            .catch((error) => {
-                swal("Oops, Algo salió mal!!", "","error");
-                console.log(error);
-            })
-    } 
-
-    onSubmitReasignar = (e) =>{
-        fetch(CONFIG + 'alumnoalumnoprograma/actualizar/' + this.state.objRecaudaciones[0].idAlum + '/' + this.state.alumno.codAlumno + '/' + this.state.alumno.idPrograma)
-            .then((response) => {
-                if(response){
-                    console.log(response);
-                    swal("Guardado exitosamente", "", "success");
-                } else{
-                    swal("Oops, algo salió mal", "","error");
-                }
-            }) 
-            .catch((error) => {
-                swal("Oops, algo salió mal", "","error");
-            })
-        e.preventDefault();
-    }
-
     onSubmitNombre = (e) => {
         var nombres = this.nombre.value.toUpperCase();
         if(!nombres){
@@ -182,6 +143,21 @@ class BuscarNuevo extends React.Component {
         if(!rec){
             swal("Ingrese numero de recibo a buscar", " ", "info");
         } else{
+            this.setState({
+                objRecaudaciones: [],
+                objAlumnos: [],
+                ObjAsignación: [],
+                buscarRec: false,
+                asignarRec: false,
+                estado: false,
+                alumno: null,
+                opcAlumno: [],
+                dni: '',
+                codigo: '',
+                apePat: '',
+                apeMat: '',
+                nombre: '',
+            })
             fetch(CONFIG + 'recaudaciones/rec/' + rec)
                 .then((response) => {
                     return response.json();
@@ -242,7 +218,7 @@ class BuscarNuevo extends React.Component {
                             })
                             .catch((error) => {
                                 console.log(error);
-                            });
+                        });
                     } else{
                         console.log("Array de ObjRecaudaciones está vació");
                         swal("Número de recibo incorrecto", "", "warning");
@@ -396,16 +372,23 @@ class BuscarNuevo extends React.Component {
                                         </tr>
                                     </tbody>
                                 </table>
-                                <div className="row justify-content-md-center">
-                                    <div className="col col-lg-6">
-                                        <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitGuardar}>
-                                            Asignar <i className="large material-icons left">save</i>
-                                        </button>
-                                    </div>
-                                    <div className="col col-lg-6">
-                                        <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitReasignar}>
-                                            Reasignar <i className="large material-icons left">save</i>
-                                        </button>
+                                <div className="center datos">
+                                    <div>
+                                        <div className="col col-lg-4">
+                                            <button className="waves-effect btn-success btn-large center" type="submit" onClick={this.onSubmitGuardar}>
+                                                Asignar <i className="large material-icons left">save</i>
+                                            </button>
+                                        </div>
+                                        <div className="col col-lg-4">
+                                            <button className="waves-effect btn-warning btn-large center" type="submit" onClick={this.onSubmitReasignar}>
+                                                Reasignar <i className="large material-icons left">replay</i>
+                                            </button>
+                                        </div>
+                                        <div className="col col-lg-4">
+                                            <button className="waves-effect btn-danger btn-large center" type="submit" onClick={this.onSubmitEliminar}>
+                                                Eliminar <i className="large material-icons left">delete</i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -427,8 +410,16 @@ class BuscarNuevo extends React.Component {
                             <div className="col col-lg-2">
                                 <input className="autoomplete" value={this.state.codigo} onChange={this.onChangeCodigo} placeholder="Código"></input>
                             </div>
-                            <div className="col col-lg-4">
-                                <input className="autocomplete" value={this.state.apeNom} onChange={this.onChangeApeNom} placeholder="Apellidos y Nombres"></input>
+                        </div>
+                        <div className="row justify-content-md-center">
+                            <div className="col col-lg-2">
+                                <input className="autocomplete" value={this.state.apePat} onChange={this.onChangeApePaterno} placeholder="Apellido paterno"></input>
+                            </div>
+                            <div className="col col-lg-2">
+                                <input className="autocomplete" value={this.state.apeMat} onChange={this.onChangeApeMaterno} placeholder="Apellido materno"></input>
+                            </div>
+                            <div className="col col-lg-2">
+                                <input className="autocomplete" value={this.state.nombre} onChange={this.onChangeNombre} placeholder="Nombres"></input>
                             </div>
                         </div>
                         <br/>
@@ -446,17 +437,74 @@ class BuscarNuevo extends React.Component {
     }
 
     onSubmitAsignar = (e) => {
-        this.Validar(this.state.dni, this.state.codigo, this.state.apePat, this.state.apeMat, this.state.nombre);
-        if(this.state.dni != '' && this.state.codigo == '' && this.state.apeNom == ''){
-            this.buscarDni(this.state.dni, e);
-        } else if(this.state.dni == '' && this.state.codigo != '' && this.state.apeNom == ''){
-           this.buscarCodigo(this.state.codigo, e);
-        } else if(this.state.dni == '' && this.state.codigo == '' && this.state.apeNom != ''){
-            this.buscarApellidoNombre(this.state.apeNom, e);
-        } else{
-            swal("Lo sentimos, sólo puede llenar un campo para la búsqueda", "", "info");
+        if(this.Validar(this.state.dni, this.state.codigo, this.state.apePat, this.state.apeMat, this.state.nombre)){
+            if(this.state.dni != '' && this.state.codigo == '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == ''){
+                this.buscarDni(this.state.dni, e);
+            } else if(this.state.dni == '' && this.state.codigo != '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == ''){
+            this.buscarCodigo(this.state.codigo, e);
+            } else if(this.state.dni == '' && this.state.codigo == '' && this.state.apePat != '' || this.state.apeMat != '' || this.state.nombre != ''){
+                this.buscarApellidoNombre(this.state.apePat, this.state.apeMat, this.state.nombre, e);
+            } else{
+                swal("Lo sentimos, sólo puede llenar un campo para la búsqueda", "", "info");
+            }
         }
         e.preventDefault();
+    }
+
+    onSubmitGuardar = (e) => {
+        console.log("---DATA---");
+        console.log(this.state.objRecaudaciones[0].idAlum);
+        if(this.state.alumno != null){
+            fetch(CONFIG + 'alumnoalumnoprograma/add', {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                    body: JSON.stringify ({
+                        'idAlumno': this.state.objRecaudaciones[0].idAlum,
+                        'codAlumno': this.state.alumno.codAlumno,
+                        'idPrograma': this.state.alumno.idPrograma
+                    })
+                })
+                .then((response) => {
+                    console.log(response);
+                    if(response){
+                        swal("guardado exitosamente!", "","success");
+                    }else{
+                        swal("Oops, Algo salió mal!!", "","error");
+                    }
+                })
+                .catch((error) => {
+                    swal("Oops, Algo salió mal!!", "","error");
+                    console.log(error);
+                })
+        }else{
+            swal("Seleccione una opción", " ", "info");
+        }
+    } 
+
+    onSubmitReasignar = (e) =>{
+        if(this.state.alumno != null){
+            fetch(CONFIG + 'alumnoalumnoprograma/actualizar/' + this.state.objRecaudaciones[0].idAlum + '/' + this.state.alumno.codAlumno + '/' + this.state.alumno.idPrograma)
+                .then((response) => {
+                    if(response){
+                        console.log(response);
+                        swal("Guardado exitosamente", "", "success");
+                    } else{
+                        swal("Oops, algo salió mal", "","error");
+                    }
+                }) 
+                .catch((error) => {
+                    swal("Oops, algo salió mal", "","error");
+                })
+        }else{
+            swal("Seleccione una opción", " ", "info");
+        }
+        e.preventDefault();
+    }
+
+    onSubmitEliminar = (e) => {
+
     }
 
     onChangeDni = (e) => {
@@ -473,10 +521,24 @@ class BuscarNuevo extends React.Component {
         });
     }
 
-    onChangeApeNom = (e) => {
+    onChangeApePaterno = (e) => {
         e.preventDefault();
         this.setState({
-            apeNom: e.target.value
+            apePat: e.target.value
+        });
+    }
+
+    onChangeApeMaterno = (e) => {
+        e.preventDefault();
+        this.setState({
+            apeMat: e.target.value
+        });
+    }
+
+    onChangeNombre = (e) => {
+        e.preventDefault();
+        this.setState({
+            nombre: e.target.value
         });
     }
 
@@ -543,10 +605,10 @@ class BuscarNuevo extends React.Component {
             });
     }
 
-    buscarApellidoNombre = (apellidoNombre, e) => {
-        console.log(this.state.apePat, "Apellidos y Nombres");
+    buscarApellidoNombre = (pat, mat, nom, e) => {
+        console.log(pat + ' ' + mat + ' ' + nom, "Apellidos y Nombres");
 
-        var nombre = apellidoNombre;
+        var nombre = pat + ' ' + mat + ' ' + nom;
         var separador = ' ';
         var arregloCadenas = nombre.split(separador);
         var arreglo = [];
@@ -586,11 +648,12 @@ class BuscarNuevo extends React.Component {
                 swal("Algo salío mal", "", "error");
                 console.log(error);
             });
+            e.preventDefault();
     }
 
-    Validar(dni, codigo, apellidoNombre){
-        if(dni == '' && codigo == '' && apellidoNombre == ''){
-            swal("Ingrese uno de los campos para realizar la búsqueda", "", "info");
+    Validar(dni, codigo, paterno, materno, nombre){
+        if(dni == '' && codigo == '' && paterno == '' && materno =='' && nombre == ''){
+            swal("Llene uno de los campos para realizar la búsqueda", "", "info");
             return false;
         } else{
             return true;
