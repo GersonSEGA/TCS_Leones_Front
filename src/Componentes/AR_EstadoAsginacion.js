@@ -1,4 +1,5 @@
 import React from 'react'
+import CONFIG from '../Configuracion/Config'
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Table} from 'reactstrap'
 
 class AR_EstadoAsignacion extends React.Component {
@@ -7,6 +8,7 @@ class AR_EstadoAsignacion extends React.Component {
         super(props);
         this.state = {
           modal: false,
+          objProgramas: [],
           detalle: {
               codigo: '',
               nombre: '',
@@ -18,30 +20,37 @@ class AR_EstadoAsignacion extends React.Component {
     }
     
     toggle = (e) => {
-        var prog = this.props.alumno[0].nom_programa;
-        var separador = ' ';
-        var arrayCadenas = prog.split(separador);
-        var arreglo = [];
-        for(let i = 0; i < arrayCadenas.length; i++){
-            if(arrayCadenas[i] != ' ' && arrayCadenas[i] != 'DE' && arrayCadenas[i] != 'LA' && arrayCadenas[i] != 'EL' && arrayCadenas[i] != 'EN' &&
-               arrayCadenas[i] != ' ' && arrayCadenas[i] != 'DEL' && arrayCadenas[i] != 'LAS'){
-                arreglo.push(arrayCadenas[i]);
-            }
+        let id_programa = this.props.asignado.idPrograma;
+        if(this.props.estadoAsignacion){
+            fetch(CONFIG + '/programa/buscarPrograma/' + id_programa)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((programas) => {
+                    console.log("---Programas---");
+                    console.log(programas);
+                    this.setState({
+                        objProgramas: programas,
+                    });
+                    console.log("---ObjProgramas---");
+                    console.log(this.state.objProgramas);
+                    if(this.state.objProgramas.length != 0){
+                        this.setState({
+                            detalle: {
+                                codigo: this.props.alumno[0].codAlumno,
+                                nombre: this.props.recibo[0].apeNom,
+                                programa: this.state.objProgramas.siglaPrograma,
+                            },
+                            modal: !this.state.modal
+                        });
+                    }else{
+                        console.log("--NO ENTRÓ--");
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
         }
-        console.log('---PROGRAMA---');
-        var newPrograma = '';
-        for(let i = 0; i < arreglo.length; i++){
-            newPrograma += arreglo[i].substr(0, 1);
-            console.log(newPrograma);
-        }
-        this.setState({
-            detalle: {
-                codigo: this.props.alumno[0].codAlumno,
-                nombre: this.props.recibo[0].apeNom,
-                programa: newPrograma,
-            },
-            modal: !this.state.modal
-        });
         e.preventDefault();
     }
 

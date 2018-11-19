@@ -138,7 +138,7 @@ class PagoListNuevo2 extends React.Component {
       </div>
     )
     }else{
-      return <div className="mensaje centrar">No se encontraron datos</div>
+      return <div className="mensaje centrar"></div>
     }
 
     

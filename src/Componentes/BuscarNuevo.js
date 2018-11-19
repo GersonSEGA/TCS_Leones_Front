@@ -353,7 +353,7 @@ class BuscarNuevo extends React.Component {
                                             <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
                                             <td className="td1">
-                                                <AR_EstadoAsignacion estadoAsignacion={this.state.estado} recibo={this.state.objRecaudaciones} alumno={this.state.objAlumnos}/>
+                                                <AR_EstadoAsignacion estadoAsignacion={this.state.estado} recibo={this.state.objRecaudaciones} alumno={this.state.objAlumnos} asignado={this.state.ObjAsignación}/>
                                             </td>
                                             <td className="td1">
                                                 <form>
@@ -470,6 +470,9 @@ class BuscarNuevo extends React.Component {
                     console.log(response);
                     if(response){
                         swal("guardado exitosamente!", "","success");
+                        this.setState({
+                            estado: true,
+                        });
                     }else{
                         swal("Oops, Algo salió mal!!", "","error");
                     }
@@ -489,7 +492,7 @@ class BuscarNuevo extends React.Component {
                 .then((response) => {
                     if(response){
                         console.log(response);
-                        swal("Guardado exitosamente", "", "success");
+                        swal("Reasignado exitosamente", "", "success");
                     } else{
                         swal("Oops, algo salió mal", "","error");
                     }
@@ -504,7 +507,26 @@ class BuscarNuevo extends React.Component {
     }
 
     onSubmitEliminar = (e) => {
-
+        let id_alum = this.state.objRecaudaciones[0].idAlum;
+        if(this.state.estado){
+            fetch(CONFIG + 'alumnoalumnoprograma/eliminar/' + id_alum)
+                .then((response) => {
+                    if(response){
+                        console.log(response);
+                        swal("Eliminado exitosamente", "", "success");
+                        this.setState({
+                            estado: false,
+                        });
+                    } else{
+                        swal("Oops, algo salió mal", "","error");
+                    }
+                })
+                .catch((error) => {
+                    swal("Oops, algo salió mal", "","error");
+                })
+        }else{
+            swal("Registro no asignado, no se puede eliminar", " ", "info");
+        }
     }
 
     onChangeDni = (e) => {
