@@ -21,36 +21,34 @@ class AR_EstadoAsignacion extends React.Component {
     
     toggle = (e) => {
         let id_programa = this.props.asignado.idPrograma;
-        if(this.props.estadoAsignacion){
-            fetch(CONFIG + '/programa/buscarPrograma/' + id_programa)
-                .then((response) => {
-                    return response.json();
-                })
-                .then((programas) => {
-                    console.log("---Programas---");
-                    console.log(programas);
+        fetch(CONFIG + '/programa/buscarPrograma/' + id_programa)
+            .then((response) => {
+                return response.json();
+            })
+            .then((programas) => {
+                console.log("---Programas---");
+                console.log(programas);
+                this.setState({
+                    objProgramas: programas,
+                });
+                console.log("---ObjProgramas---");
+                console.log(this.state.objProgramas);
+                if(this.state.objProgramas.length != 0){
                     this.setState({
-                        objProgramas: programas,
+                        detalle: {
+                            codigo: this.props.alumno[0].codAlumno,
+                            nombre: this.props.recibo[0].apeNom,
+                            programa: this.state.objProgramas.siglaPrograma,
+                        },
+                        modal: !this.state.modal
                     });
-                    console.log("---ObjProgramas---");
-                    console.log(this.state.objProgramas);
-                    if(this.state.objProgramas.length != 0){
-                        this.setState({
-                            detalle: {
-                                codigo: this.props.alumno[0].codAlumno,
-                                nombre: this.props.recibo[0].apeNom,
-                                programa: this.state.objProgramas.siglaPrograma,
-                            },
-                            modal: !this.state.modal
-                        });
-                    }else{
-                        console.log("--NO ENTRÓ--");
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-        }
+                }else{
+                    console.log("--NO ENTRÓ--");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
         e.preventDefault();
     }
 
