@@ -34,8 +34,11 @@ class PagoRowNuevo2 extends React.Component {
     return(
     <tr>
       <td className="td1">{this.props.pago.apeNom}</td>
-      <td className="td1">{this.props.pago.idAlum}</td>
-      <td className="td1">{this.props.pago.codigo}</td>
+      <td className="td1">{this.props.pago.concepto}</td>
+      <td className="td1">{this.props.pago.numero}</td>
+      <td className="td1">{this.props.pago.moneda}</td>
+      <td className="td1">{this.props.pago.importe}</td>
+      <td className="td1">{this.props.pago.fecha}</td>
       <td className="td1"><SelectNuevo2 Opcion={this.OpcionSeleccionada} nombre={this.props.pago.apeNom} listado = {this.props.pago.codigos}/></td>
 	</tr>
     )

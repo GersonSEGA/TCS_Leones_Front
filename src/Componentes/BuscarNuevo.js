@@ -99,6 +99,7 @@ class BuscarNuevo extends React.Component {
                 buscarRec: false,
                 asignarRec: false,
             });
+            this.props.flag (true);
         } else if(selectedOption.value == 'Búsqueda por recibo'){
             this.setState({
                 value: selectedOption,
@@ -108,6 +109,7 @@ class BuscarNuevo extends React.Component {
                 buscarRec: false,
                 asignarRec: false,
             });
+            this.props.flag (false);
         } else if(selectedOption.value == 'Pendiente de asignación'){
             this.setState({
                 value: selectedOption,
@@ -117,6 +119,7 @@ class BuscarNuevo extends React.Component {
                 buscarRec: false,
                 asignarRec: false,
             });
+            this.props.flag (false);
             this.onSubmitRecaudaciones();
         }
     }

@@ -29,8 +29,11 @@ class AppNueva extends React.Component {
       filtroAl:new String(""),
       filtroNumeros: [],
       programa:[],
-      arregloInsertar:[]
+      arregloInsertar:[],
+
+      flag: true
     }
+
     this.enviar=this.enviar.bind(this);
 
     this.BuscarNombre = this.BuscarNombre.bind(this);
@@ -38,6 +41,12 @@ class AppNueva extends React.Component {
     this.Regresar = this.Regresar.bind(this);
     this.PagoAsignar=this.PagoAsignar.bind(this);
    
+}
+
+flag = (flag) => {
+  this.setState({
+    flag: flag
+  });
 }
 
 Regresar=(e)=>{
@@ -74,15 +83,17 @@ PagoAsignar(opcion) {
           <hr />
           <div className="SplitPane row">
             <div className="col-xs-12">
-              <BuscarNuevo Busqueda={this.BuscarNombre} />
+              <BuscarNuevo Busqueda={this.BuscarNombre} flag={this.flag}/>
             </div>  
           </div> 
           <hr/>
-          <div className="row center-xs centrar">
-            <div className="center-xs-12 margin_top ">
-              <PagoListNuevo2 Opcion={this.BuscarNombre} nombreBusqueda={this.state.nombre} nombre={this.state.nombre_select} funcion={this.Funcion} listado={this.state.pagocero}/>
+          {this.state.flag?(
+            <div className="row center-xs centrar">
+              <div className="center-xs-12 margin_top ">
+                <PagoListNuevo2 Opcion={this.BuscarNombre} nombreBusqueda={this.state.nombre} nombre={this.state.nombre_select} funcion={this.Funcion} listado={this.state.pagocero}/>
+              </div>
             </div>
-          </div>
+          ):(null)}
           <footer>
             <div className="row center-xs centrar color">
               Realizado por Leones
@@ -225,34 +236,67 @@ BuscarNombre(busqueda) {
     //ANTERIOR LINK
     //https://modulo-alumno-zuul.herokuapp.com/modulo-alumno-jdbc-client/alumno/leer/restringido/
 
-    fetch(CONFIG+'alumno/leer/restringido/'+nombrenuevo)
+    fetch(CONFIG + 'recaudaciones/alumno/concepto/buscar/' + nombrenuevo)
       .then((response) => {
         return response.json()
       })
       .then((pagos) => {
       
-      // console.log("Listado de pagos recibidos");
-      // console.log(pagos);
+      console.log("Listado de pagos recibidos");
+      console.log(pagos);
 
       var listado1 =[];
       var opciones  = [];
       for (let i = 0; i< pagos.length; i++) {
         var listadoRec = { 
-          idAlum : '',
           apeNom:'',
-          codigo:'',
-          dni:'',
-          idFacultad:'',
+          concepto: '',
+          fecha: '',
+          id_rec: '',
+          numero: '',
+          idAlum : '',
+          moneda: '',
+          importe: '',
           codigos:[]
         }
-        listadoRec.idAlum = pagos[i].idAlum;
-        listadoRec.apeNom = pagos[i].apeNom;
-        listadoRec.codigo = pagos[i].codigo;
-        listadoRec.dni = pagos[i].dni;
-        listadoRec.idFacultad = pagos[i].idFacultad;
-        listado1.push(listadoRec); 
-      }
+        if(pagos[i].moneda == '108'){
 
+          listadoRec.apeNom = pagos[i].ape_nom;
+          listadoRec.concepto = pagos[i].concepto;
+          listadoRec.fecha = pagos[i].fecha;
+          listadoRec.id_rec = pagos[i].id_rec;
+          listadoRec.numero = pagos[i].numero;
+          listadoRec.idAlum = pagos[i].id_alum;
+          listadoRec.moneda = 'SOL';
+          listadoRec.importe = 'S/' + pagos[i].importe;
+
+        } else if(pagos[i].moneda == '113'){
+
+          listadoRec.apeNom = pagos[i].ape_nom;
+          listadoRec.concepto = pagos[i].concepto;
+          listadoRec.fecha = pagos[i].fecha;
+          listadoRec.id_rec = pagos[i].id_rec;
+          listadoRec.numero = pagos[i].numero;
+          listadoRec.idAlum = pagos[i].id_alum;
+          listadoRec.moneda = 'DOL';
+          listadoRec.importe = '$ ' + pagos[i].importe;
+
+        } else{
+
+          listadoRec.apeNom = pagos[i].ape_nom;
+          listadoRec.concepto = pagos[i].concepto;
+          listadoRec.fecha = pagos[i].fecha;
+          listadoRec.id_rec = pagos[i].id_rec;
+          listadoRec.numero = pagos[i].numero;
+          listadoRec.idAlum = pagos[i].id_alum;
+          listadoRec.moneda = ' ';
+          listadoRec.importe = pagos[i].importe;
+
+        }
+        listado1.push(listadoRec); 
+        console.log("Listado de recibos");
+        console.log(listadoRec);
+      }
 
       // console.log("arreglo con join con espacios")
       // console.log(nombrenuevo2);
