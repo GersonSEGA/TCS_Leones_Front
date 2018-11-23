@@ -53,6 +53,9 @@ class BuscarNuevo extends React.Component {
                 moneda: '',
                 importe: '',
                 fecha: '',
+                estado: '',
+                codAlumno: '',
+                programa: '',
             },
 
             estado: false,
@@ -175,6 +178,7 @@ class BuscarNuevo extends React.Component {
                     console.log(this.state.objRecaudaciones);
                     if(this.state.objRecaudaciones.length > 0){
                         this.getDetalleRecaudaciones(this.state.objRecaudaciones);
+                        this.buscarApellidoNombre(this.state.objRecaudaciones[0].apeNom, ' ', ' ', e);
                         this.setState({
                             buscarRec: true,
                         });
@@ -203,6 +207,7 @@ class BuscarNuevo extends React.Component {
                                             });
                                             console.log("---ObjAlumnos---");
                                             console.log(this.state.objAlumnos);
+                                            console.log(this.state.detalleRecaudaciones);
                                             if(this.state.objAlumnos.length > 0){
                                                 this.setState({
                                                     estado: true,
