@@ -399,7 +399,7 @@ class BuscarNuevo extends React.Component {
                     </div>
                 ): (null)}
                 {this.state.posgradoB?(
-                    <div className="row justify-content-md-center">
+                    <div>
                         <AR_PendienteAsignacion listPendienteAsignacion={this.state.objPendienteAsignacion}/>
                     </div>
                 ): (null)}
@@ -576,21 +576,25 @@ class BuscarNuevo extends React.Component {
                 console.log("---Alumnos---");
                 console.log(alumnos);
                 var Array = [];
-                for(var i = 0; i < alumnos.length; i++){
-                    var e = {
-                        codAlumno: alumnos[i].codAlumno,
-                        idPrograma: alumnos[i].idPrograma, 
-                        value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
-                        label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
+                if(alumnos.length > 0){
+                    for(var i = 0; i < alumnos.length; i++){
+                        var e = {
+                            codAlumno: alumnos[i].codAlumno,
+                            idPrograma: alumnos[i].idPrograma, 
+                            value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
+                            label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
+                        }
+                        Array.push(e);
                     }
-                    Array.push(e);
+                    swal("Consulta realizada exitosamente!", "", "success");
+                }else{
+                    swal("No hay registro de ese alumno", " ", "info");
                 }
                 this.setState({
                     opcAlumno: Array,
                     objAlumnos: alumnos,
                     asignarRec: false,
                 });
-                swal("Consulta realizada exitosamente!", "", "success");
             })
             .catch((error) => {
                 swal("Algo salío mal", "", "error");
@@ -608,14 +612,19 @@ class BuscarNuevo extends React.Component {
                 console.log("---Alumnos---");
                 console.log(alumnos);
                 var Array = [];
-                for(var i = 0; i < alumnos.length; i++){
-                    var e = {
-                        codAlumno: alumnos[i].codAlumno,
-                        idPrograma: alumnos[i].idPrograma, 
-                        value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
-                        label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
+                if(alumnos.length > 0){
+                    for(var i = 0; i < alumnos.length; i++){
+                        var e = {
+                            codAlumno: alumnos[i].codAlumno,
+                            idPrograma: alumnos[i].idPrograma, 
+                            value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
+                            label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
+                        }
+                        Array.push(e);
                     }
-                    Array.push(e);
+                    swal("Consulta realizada exitosamente!", "", "success");
+                }else{
+                    swal("No hay registro de ese alumno", " ", "info");
                 }
                 this.setState({
                     opcAlumno: Array,
@@ -653,21 +662,25 @@ class BuscarNuevo extends React.Component {
                 console.log("---Alumnos---");
                 console.log(alumnos);
                 var Array = [];
-                for(var i = 0; i < alumnos.length; i++){
-                    var e = {
-                        codAlumno: alumnos[i].codAlumno,
-                        idPrograma: alumnos[i].idPrograma, 
-                        value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
-                        label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
+                if(alumnos.length > 0){
+                    for(var i = 0; i < alumnos.length; i++){
+                        var e = {
+                            codAlumno: alumnos[i].codAlumno,
+                            idPrograma: alumnos[i].idPrograma, 
+                            value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
+                            label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
+                        }
+                        Array.push(e);
                     }
-                    Array.push(e);
+                    swal("Consulta realizada exitosamente!", "", "success");
+                }else{
+                    swal("No hay registro de ese alumno", " ", "info");
                 }
                 this.setState({
                     opcAlumno: Array,
                     objAlumnos: alumnos,
                     asignarRec: false,
                 });
-                swal("Consulta realizada exitosamente!", "", "success");
             })
             .catch((error) => {
                 swal("Algo salío mal", "", "error");

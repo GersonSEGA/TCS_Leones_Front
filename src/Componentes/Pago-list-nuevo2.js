@@ -125,7 +125,7 @@ class PagoListNuevo2 extends React.Component {
           {
             this.state.pageOfItems.map((pago) => {
               return <PagoRowNuevo2  Opcion={this.OpcionSeleccionada} nombre={this.props.nombre} Funciones={this.props.funcion} key={pago.idAlum} 
-                                  pago={ pago} />
+                                  pago={pago} />
             })
           }
         </tbody>
