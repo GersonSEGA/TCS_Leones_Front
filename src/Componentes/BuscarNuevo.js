@@ -394,7 +394,7 @@ class BuscarNuevo extends React.Component {
                                         </div>
                                         <div className="col col-lg-4">
                                             <button className="waves-effect btn-danger btn-large center" type="submit" onClick={this.onSubmitEliminar}>
-                                                Eliminar <i className="large material-icons left">delete</i>
+                                                Desasignar <i className="large material-icons left">delete</i>
                                             </button>
                                         </div>
                                     </div>
