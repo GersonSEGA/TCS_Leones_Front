@@ -251,8 +251,60 @@ class BuscarNuevo extends React.Component {
             .then((pendienteAsignacion) => {
                 console.log("---PendienteAsignacion---");
                 console.log(pendienteAsignacion);
+
+                var lista = [];
+                for(let i = 0; i < pendienteAsignacion.length; i++){
+                    var listadoRec = { 
+                        apeNom:'',
+                        concepto: '',
+                        fecha: '',
+                        id_rec: '',
+                        numero: '',
+                        idAlum : '',
+                        moneda: '',
+                        importe: ''
+                    }
+
+                    if(pendienteAsignacion[i].moneda == '108'){
+
+                        listadoRec.apeNom = pendienteAsignacion[i].ape_nom;
+                        listadoRec.concepto = pendienteAsignacion[i].concepto;
+                        listadoRec.fecha = pendienteAsignacion[i].fecha;
+                        listadoRec.id_rec = pendienteAsignacion[i].id_rec;
+                        listadoRec.numero = pendienteAsignacion[i].numero;
+                        listadoRec.idAlum = pendienteAsignacion[i].id_alum;
+                        listadoRec.moneda = 'SOL';
+                        listadoRec.importe = 'S/' + pendienteAsignacion[i].importe;
+              
+                    } else if(pendienteAsignacion[i].moneda == '113'){
+              
+                        listadoRec.apeNom = pendienteAsignacion[i].ape_nom;
+                        listadoRec.concepto = pendienteAsignacion[i].concepto;
+                        listadoRec.fecha = pendienteAsignacion[i].fecha;
+                        listadoRec.id_rec = pendienteAsignacion[i].id_rec;
+                        listadoRec.numero = pendienteAsignacion[i].numero;
+                        listadoRec.idAlum = pendienteAsignacion[i].id_alum;
+                        listadoRec.moneda = 'DOL';
+                        listadoRec.importe = '$ ' + pendienteAsignacion[i].importe;
+              
+                    } else{
+              
+                        listadoRec.apeNom = pendienteAsignacion[i].ape_nom;
+                        listadoRec.concepto = pendienteAsignacion[i].concepto;
+                        listadoRec.fecha = pendienteAsignacion[i].fecha;
+                        listadoRec.id_rec = pendienteAsignacion[i].id_rec;
+                        listadoRec.numero = pendienteAsignacion[i].numero;
+                        listadoRec.idAlum = pendienteAsignacion[i].id_alum;
+                        listadoRec.moneda = ' ';
+                        listadoRec.importe = pendienteAsignacion[i].importe;
+              
+                    }
+                    lista.push(listadoRec);
+
+                }
+
                 this.setState({
-                    objPendienteAsignacion: pendienteAsignacion,
+                    objPendienteAsignacion: lista,
                 })
                 console.log("---ObjPendienteAsignacion---");
                 console.log(this.state.objPendienteAsignacion);
